@@ -1,6 +1,7 @@
 package com.davidthomasbernal.stardict;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class Dictionary {
@@ -18,7 +19,7 @@ public class Dictionary {
      * @param path
      * @return
      */
-    public static Dictionary fromIfo(String path) {
+    public static Dictionary fromIfo(String path) throws IOException {
         File ifo = new File(path);
         String abs = ifo.getAbsolutePath();
 
@@ -55,13 +56,13 @@ public class Dictionary {
             hasDict = index.exists() && index.isFile();
         }
 
-        if (!hasIdx) {
+        if (!hasDict) {
             throw new IllegalArgumentException("Idx file does not exist");
         }
 
-
+        IfoParser parser = new IfoParser(ifo);
         return new Dictionary(
-                DictionaryInfo.fromIfo(ifo),
+                parser.parse(),
                 null,
                 null
         );
