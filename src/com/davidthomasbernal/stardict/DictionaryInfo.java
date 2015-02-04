@@ -1,5 +1,7 @@
 package com.davidthomasbernal.stardict;
 
+import org.omg.CORBA.DynAnyPackage.Invalid;
+
 import java.io.*;
 import java.util.HashMap;
 
@@ -21,8 +23,32 @@ public class DictionaryInfo {
 
     protected HashMap<String, String> properties = new HashMap<String, String>();
 
-    public void assertValid(boolean supportSynFile) {
+    public class InvalidInfoException extends RuntimeException {
+        public InvalidInfoException(String message) { super(message); }
+    }
 
+    public void assertValid(boolean supportSynFile) {
+        if (wordCount < 0) {
+            throw new InvalidInfoException("Wordcount is missing or negative.");
+        }
+
+        if (idxFileSize < 0) {
+            throw new InvalidInfoException("idxFileSize is missing or negative.");
+        }
+
+        if (name == null) {
+            throw new InvalidInfoException("Name is missing");
+        }
+
+        if (version == null) {
+            throw new InvalidInfoException("Version is missing.");
+        }
+
+        if (supportSynFile) {
+            if (synWordCount < 0) {
+                throw new InvalidInfoException("synWordCount is missing or negative");
+            }
+        }
     }
 
     public long getIdxOffsetBits() {

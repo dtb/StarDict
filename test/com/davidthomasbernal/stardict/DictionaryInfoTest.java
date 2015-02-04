@@ -87,7 +87,7 @@ public class DictionaryInfoTest {
     }
 
     @Test(expected = Exception.class)
-    public void testAssertValidWithMissingSyn() {
+    public void testAssertValidWithMissingSynWordCount() {
         DictionaryInfo info = new DictionaryInfo();
         info.setVersion("2.4.2");
         info.setName("Some dictionary");
