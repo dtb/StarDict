@@ -1,6 +1,9 @@
 package com.davidthomasbernal.stardict;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 
 class IfoParser {
     public static final String BOOK_NAME = "bookname";
@@ -14,8 +17,8 @@ class IfoParser {
 
     protected final BufferedReader reader;
 
-    public IfoParser(File ifo) throws FileNotFoundException {
-        this.reader = new BufferedReader(new FileReader(ifo));
+    public IfoParser(File ifoFile) throws FileNotFoundException {
+        this.reader = new BufferedReader(new InputStreamReader(new FileInputStream(ifoFile), StandardCharsets.UTF_8));
     }
 
     public IfoParser(String ifo) {
