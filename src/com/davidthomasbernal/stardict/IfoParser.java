@@ -62,16 +62,16 @@ class IfoParser {
         if (key.equals(BOOK_NAME)) {
             result.setName(value);
         } else if (key.equals(WORD_COUNT)) {
-            long wordCount = Long.parseLong(value);
+            int wordCount = Integer.parseInt(value);
             result.setWordCount(wordCount);
         } else if (key.equals(SYN_WORD_COUNT)) {
-            long synWordCount = Long.parseLong(value);
+            int synWordCount = Integer.parseInt(value);
             result.setSynWordCount(synWordCount);
         } else if (key.equals(IDX_FILE_SIZE)) {
-            long idxFileSize = Long.parseLong(value);
+            int idxFileSize = Integer.parseInt(value);
             result.setIdxFileSize(idxFileSize);
         } else if (key.equals(IDX_OFFSET_BITS)) {
-            long idxOffsetBits = Long.parseLong(value);
+            int idxOffsetBits = Integer.parseInt(value);
             result.setIdxOffsetBits(idxOffsetBits);
         } else if (key.equals(AUTHOR)) {
             result.setAuthor(value);

@@ -61,9 +61,10 @@ public class Dictionary {
         }
 
         IfoParser parser = new IfoParser(ifo);
+        DictionaryInfo dictionaryInfo = parser.parse();
         return new Dictionary(
-                parser.parse(),
-                null,
+                dictionaryInfo,
+                new DictionaryIndex(index, dictionaryInfo),
                 null
         );
     }

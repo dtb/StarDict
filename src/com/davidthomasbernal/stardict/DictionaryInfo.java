@@ -9,11 +9,11 @@ public class DictionaryInfo {
 
     protected String name;
 
-    protected long wordCount = -1;
-    protected long synWordCount = -1;
+    protected int wordCount = -1;
+    protected int synWordCount = -1;
 
-    protected long idxFileSize = -1;
-    protected long idxOffsetBits = -1;
+    protected int idxFileSize = -1;
+    protected int idxOffsetBits = 32;
 
     protected String author;
 
@@ -51,19 +51,19 @@ public class DictionaryInfo {
         }
     }
 
-    public long getIdxOffsetBits() {
+    public int getIdxOffsetBits() {
         return idxOffsetBits;
     }
 
-    public long getIdxFileSize() {
+    public int getIdxFileSize() {
         return idxFileSize;
     }
 
-    public long getSynWordCount() {
+    public int getSynWordCount() {
         return synWordCount;
     }
 
-    public long getWordCount() {
+    public int getWordCount() {
         return wordCount;
     }
 
@@ -75,19 +75,19 @@ public class DictionaryInfo {
         this.name = name;
     }
 
-    public void setWordCount(long wordCount) {
+    public void setWordCount(int wordCount) {
         this.wordCount = wordCount;
     }
 
-    public void setSynWordCount(long synWordCount) {
+    public void setSynWordCount(int synWordCount) {
         this.synWordCount = synWordCount;
     }
 
-    public void setIdxFileSize(long idxFileSize) {
+    public void setIdxFileSize(int idxFileSize) {
         this.idxFileSize = idxFileSize;
     }
 
-    public void setIdxOffsetBits(long idxOffsetBits) {
+    public void setIdxOffsetBits(int idxOffsetBits) {
         this.idxOffsetBits = idxOffsetBits;
     }
 

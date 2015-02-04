@@ -1,5 +1,7 @@
 package com.davidthomasbernal.stardict;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 
 public class Main {
