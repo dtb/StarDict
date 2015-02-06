@@ -1,15 +1,13 @@
 package com.davidthomasbernal.stardict;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 public class DictionaryIndex {
     protected InputStream stream;
     protected final DictionaryInfo dictionaryInfo;
 
-    private Collection<IndexEntry> entries;
+    private List<IndexEntry> entries;
 
     public DictionaryIndex(File dictFile, DictionaryInfo dictionaryInfo) throws IOException {
         this.stream = new BufferedInputStream(new FileInputStream(dictFile));
@@ -57,7 +55,7 @@ public class DictionaryIndex {
                 throw new IndexFormatException("Reached the end of the index before we finished parsing a word entry. The index is probably invalid.");
             }
         } catch (IOException exception) {
-            throw new IndexFormatException("Exception reading index", exception);
+            throw new IndexFormatException("IOException reading index", exception);
         }
 
         if (tempEntries.size() != dictionaryInfo.getWordCount()) {
@@ -68,16 +66,35 @@ public class DictionaryIndex {
     }
 
     public Collection<String> getWords() {
-        return null;
+        return new IndexWordCollection(entries);
     }
 
-    public boolean containsWord(String word) {
-        return false;
+    public boolean containsWord(String searchWord) {
+        // TODO LOL
+        return getWords().contains(searchWord);
     }
 
     private class IndexEntry {
         String word;
         long dataOffset;
         long dataSize;
+    }
+
+    public static class IndexWordCollection extends AbstractList<String> {
+        List<IndexEntry> indexEntries;
+
+        private IndexWordCollection(List<IndexEntry> indexEntries) {
+            this.indexEntries = indexEntries;
+        }
+
+        @Override
+        public String get(int index) {
+            return indexEntries.get(index).word;
+        }
+
+        @Override
+        public int size() {
+            return indexEntries.size();
+        }
     }
 }
