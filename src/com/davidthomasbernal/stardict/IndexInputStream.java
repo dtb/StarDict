@@ -29,13 +29,13 @@ public class IndexInputStream extends DataInputStream {
         int wordLength = 0;
         while ((wordByte = in.read()) != 0) {
             if (wordByte < 0) {
-                throw new EOFException();
+                throw new WordStringFormatException("Encountered EOF while trying to read a word!");
             }
 
             wordBuffer[wordLength++] = (byte) wordByte;
 
             if (wordLength >= wordBuffer.length) {
-                throw new IndexOutOfBoundsException("Word is longer than " + STARDICT_MAX_WORD_LENGTH + "bytes, which is no good");
+                throw new WordStringFormatException("Word is longer than " + STARDICT_MAX_WORD_LENGTH + " bytes, which is no good");
             }
         }
 
