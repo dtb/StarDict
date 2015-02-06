@@ -1,8 +1,7 @@
 package com.davidthomasbernal.stardict;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.channels.FileLockInterruptionException;
 
 public class Main {
 
