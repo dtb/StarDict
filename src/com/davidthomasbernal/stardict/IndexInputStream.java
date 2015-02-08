@@ -9,8 +9,11 @@ import java.nio.charset.StandardCharsets;
 /**
  * Created by david on 2/5/15.
  */
-public class IndexInputStream extends DataInputStream {
+public class IndexInputStream {
     private final int STARDICT_MAX_WORD_LENGTH = 256;
+
+    private final InputStream in;
+    private final DataInputStream dataIn;
 
     /**
      * Creates a IndexDataInputStream that uses the specified
@@ -19,7 +22,16 @@ public class IndexInputStream extends DataInputStream {
      * @param in the specified input stream
      */
     public IndexInputStream(InputStream in) {
-        super(in);
+        this.in = in;
+        this.dataIn = new DataInputStream(in);
+    }
+
+    public int readInt() throws IOException {
+        return dataIn.readInt();
+    }
+
+    public long readLong() throws IOException {
+        return dataIn.readLong();
     }
 
     private byte[] wordBuffer = new byte[STARDICT_MAX_WORD_LENGTH];
