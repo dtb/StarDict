@@ -51,7 +51,7 @@ public class IndexInputStreamTest {
 
     @Test
     public void testZeroLengthString() throws IOException {
-        byte[] bytes = new byte[0];
+        byte[] bytes = new byte[1];
 
         ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
         IndexInputStream iStream = new IndexInputStream(stream);
