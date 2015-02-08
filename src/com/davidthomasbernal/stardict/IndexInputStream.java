@@ -41,7 +41,12 @@ public class IndexInputStream {
         int wordLength = 0;
         while ((wordByte = in.read()) != 0) {
             if (wordByte < 0) {
-                throw new WordStringFormatException("Encountered EOF while trying to read a word!");
+                // if we're partway throw a word, then uh-oh!
+                if (wordLength > 0) {
+                    throw new WordStringFormatException("Encountered EOF while trying to read a word!");
+                } else {
+                    throw new EOFException();
+                }
             }
 
             wordBuffer[wordLength++] = (byte) wordByte;
