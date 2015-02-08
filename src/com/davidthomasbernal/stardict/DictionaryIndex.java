@@ -36,22 +36,24 @@ public class DictionaryIndex {
             while (true) {
                 isPartial = false;
 
-                IndexEntry entry = new IndexEntry();
-                entry.word = indexStream.readWordString();
+                String word = indexStream.readWordString();
 
                 isPartial = true;
 
+                long dataOffset;
                 switch (dictionaryInfo.getIdxOffsetFormat()) {
                     case DictionaryInfo.IDX_OFFSET_FORMAT_LONG:
-                        entry.dataOffset = indexStream.readLong();
+                        dataOffset = indexStream.readLong();
                         break;
                     case DictionaryInfo.IDX_OFFSET_FORMAT_INT:
-                        entry.dataOffset = indexStream.readInt();
+                        dataOffset = indexStream.readInt();
                         break;
+                    default:
+                        throw new IllegalArgumentException("DictionaryInfo contains an unknown offset format");
                 }
-                entry.dataSize = indexStream.readInt();
+                long dataSize = indexStream.readInt();
 
-                tempEntries.add(entry);
+                tempEntries.add(new IndexEntry(word, dataOffset, dataSize));
 
                 if (tempEntries.size() > dictionaryInfo.getWordCount()) {
                     throw new IndexFormatException("Found more words than specified in info.");
