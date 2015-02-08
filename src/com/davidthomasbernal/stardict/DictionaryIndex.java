@@ -4,19 +4,22 @@ import java.io.*;
 import java.util.*;
 
 public class DictionaryIndex {
-    protected InputStream stream;
     protected final DictionaryInfo dictionaryInfo;
 
     private List<IndexEntry> entries;
 
     public DictionaryIndex(File dictFile, DictionaryInfo dictionaryInfo) throws IOException {
-        this.stream = new BufferedInputStream(new FileInputStream(dictFile));
+        InputStream stream = new BufferedInputStream(new FileInputStream(dictFile));
         this.dictionaryInfo = dictionaryInfo;
 
-        initialize();
+        try {
+            initialize(stream);
+        } finally {
+            stream.close();
+        }
     }
 
-    protected void initialize() {
+    protected void initialize(InputStream stream) {
         ArrayList<IndexEntry> tempEntries = new ArrayList<IndexEntry>(dictionaryInfo.getWordCount());
 
         IndexInputStream indexStream = new IndexInputStream(stream);
