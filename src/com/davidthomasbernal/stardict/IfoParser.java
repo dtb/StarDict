@@ -15,6 +15,9 @@ class IfoParser {
     public static final String SAME_TYPE_SEQUENCE = "sametypesequence";
     public static final String VERSION = "version";
 
+    public static final int IDX_OFFSET_BITS_INT = 32;
+    public static final int IDX_OFFSET_BITS_LONG = 64;
+
     protected final BufferedReader reader;
 
     public IfoParser(File ifoFile) throws FileNotFoundException {
@@ -72,7 +75,7 @@ class IfoParser {
             result.setIdxFileSize(idxFileSize);
         } else if (key.equals(IDX_OFFSET_BITS)) {
             int idxOffsetBits = Integer.parseInt(value);
-            result.setIdxOffsetBits(idxOffsetBits);
+            result.setIdxOffsetFormat(parseIdxOffsetBits(idxOffsetBits));
         } else if (key.equals(AUTHOR)) {
             result.setAuthor(value);
         } else if (key.equals(SAME_TYPE_SEQUENCE)) {
@@ -83,4 +86,17 @@ class IfoParser {
             result.setProperty(key, value);
         }
     }
+
+    private int parseIdxOffsetBits(int idxOffsetBits) {
+        switch (idxOffsetBits) {
+            case IDX_OFFSET_BITS_INT:
+                return DictionaryInfo.IDX_OFFSET_FORMAT_INT;
+            case IDX_OFFSET_BITS_LONG:
+                return DictionaryInfo.IDX_OFFSET_FORMAT_LONG;
+            default:
+                throw new RuntimeException("Bad idxOffsetBets");
+        }
+    }
+
+
 }

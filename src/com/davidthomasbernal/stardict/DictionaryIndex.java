@@ -35,11 +35,11 @@ public class DictionaryIndex {
 
                 isPartial = true;
 
-                switch (dictionaryInfo.getIdxOffsetBits()) {
-                    case 64:
+                switch (dictionaryInfo.getIdxOffsetFormat()) {
+                    case DictionaryInfo.IDX_OFFSET_FORMAT_LONG:
                         entry.dataOffset = indexStream.readLong();
                         break;
-                    case 32:
+                    case DictionaryInfo.IDX_OFFSET_FORMAT_INT:
                         entry.dataOffset = indexStream.readInt();
                         break;
                 }

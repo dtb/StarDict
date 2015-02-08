@@ -13,7 +13,11 @@ public class DictionaryInfo {
     protected int synWordCount = -1;
 
     protected int idxFileSize = -1;
-    protected int idxOffsetBits = 32;
+
+    public static final int IDX_OFFSET_FORMAT_INT = 0;
+    public static final int IDX_OFFSET_FORMAT_LONG = 1;
+
+    protected int idxOffsetFormat = IDX_OFFSET_FORMAT_INT;
 
     protected String author;
 
@@ -51,10 +55,6 @@ public class DictionaryInfo {
         }
     }
 
-    public int getIdxOffsetBits() {
-        return idxOffsetBits;
-    }
-
     public int getIdxFileSize() {
         return idxFileSize;
     }
@@ -85,10 +85,6 @@ public class DictionaryInfo {
 
     public void setIdxFileSize(int idxFileSize) {
         this.idxFileSize = idxFileSize;
-    }
-
-    public void setIdxOffsetBits(int idxOffsetBits) {
-        this.idxOffsetBits = idxOffsetBits;
     }
 
     public void setSameTypeSequence(String sameTypeSequence) {
@@ -122,4 +118,13 @@ public class DictionaryInfo {
     public String getSameTypeSequence() {
         return sameTypeSequence;
     }
+
+    public int getIdxOffsetFormat() {
+        return idxOffsetFormat;
+    }
+
+    public void setIdxOffsetFormat(int idxOffsetFormat) {
+        this.idxOffsetFormat = idxOffsetFormat;
+    }
+
 }
