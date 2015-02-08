@@ -19,6 +19,12 @@ public class DictionaryIndex {
         }
     }
 
+    public DictionaryIndex(InputStream stream, DictionaryInfo info) {
+        this.dictionaryInfo = info;
+
+        initialize(stream);
+    }
+
     protected void initialize(InputStream stream) {
         ArrayList<IndexEntry> tempEntries = new ArrayList<IndexEntry>(dictionaryInfo.getWordCount());
 
@@ -72,15 +78,13 @@ public class DictionaryIndex {
         return new IndexWordCollection(entries);
     }
 
+    public List<IndexEntry> getWordEntries() {
+        return Collections.unmodifiableList(entries);
+    }
+
     public boolean containsWord(String searchWord) {
         // TODO LOL
         return getWords().contains(searchWord);
-    }
-
-    private class IndexEntry {
-        String word;
-        long dataOffset;
-        long dataSize;
     }
 
     public static class IndexWordCollection extends AbstractList<String> {
