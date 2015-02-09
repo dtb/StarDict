@@ -6,11 +6,16 @@ import java.util.*;
 public class DictionaryIndex {
     protected final DictionaryInfo dictionaryInfo;
 
-    private List<IndexEntry> entries;
+    // TODO is this actually needed?
+    private final List<IndexEntry> entries;
+
+    private final Map<String, List<IndexEntry>> entryMap;
 
     public DictionaryIndex(File dictFile, DictionaryInfo dictionaryInfo) throws IOException {
         InputStream stream = new BufferedInputStream(new FileInputStream(dictFile));
         this.dictionaryInfo = dictionaryInfo;
+        entries = new ArrayList<IndexEntry>(dictionaryInfo.getWordCount());
+        entryMap = new HashMap<String, List<IndexEntry>>(dictionaryInfo.getWordCount());
 
         try {
             initialize(stream);
@@ -21,13 +26,13 @@ public class DictionaryIndex {
 
     public DictionaryIndex(InputStream stream, DictionaryInfo info) {
         this.dictionaryInfo = info;
+        entries = new ArrayList<IndexEntry>(dictionaryInfo.getWordCount());
+        entryMap = new HashMap<String, List<IndexEntry>>(dictionaryInfo.getWordCount());
 
         initialize(stream);
     }
 
     protected void initialize(InputStream stream) {
-        ArrayList<IndexEntry> tempEntries = new ArrayList<IndexEntry>(dictionaryInfo.getWordCount());
-
         IndexInputStream indexStream = new IndexInputStream(stream);
 
         boolean isPartial = false;
@@ -53,9 +58,9 @@ public class DictionaryIndex {
                 }
                 long dataSize = indexStream.readInt();
 
-                tempEntries.add(new IndexEntry(word, dataOffset, dataSize));
+                entries.add(new IndexEntry(word, dataOffset, dataSize));
 
-                if (tempEntries.size() > dictionaryInfo.getWordCount()) {
+                if (entries.size() > dictionaryInfo.getWordCount()) {
                     throw new IndexFormatException("Found more words than specified in info.");
                 }
             }
@@ -69,11 +74,11 @@ public class DictionaryIndex {
             throw new IndexFormatException("IOException reading index", exception);
         }
 
-        if (tempEntries.size() != dictionaryInfo.getWordCount()) {
+        if (entries.size() != dictionaryInfo.getWordCount()) {
             throw new IndexFormatException("Index and info word counts did not match.");
         }
 
-        entries = tempEntries;
+        buildIndex();
     }
 
     public Collection<String> getWords() {
@@ -85,11 +90,24 @@ public class DictionaryIndex {
     }
 
     public boolean containsWord(String searchWord) {
-        // TODO LOL
-        return getWords().contains(searchWord);
+        return entryMap.containsKey(searchWord);
     }
 
-    public static class IndexWordCollection extends AbstractList<String> {
+    public List<IndexEntry> getWordEntries(String word) {
+        return entryMap.get(word);
+    }
+
+    private void buildIndex() {
+        for (IndexEntry entry : entries) {
+            if (!entryMap.containsKey(entry.word)) {
+                entryMap.put(entry.word, new LinkedList<IndexEntry>());
+            }
+
+            entryMap.get(entry.word).add(entry);
+        }
+    }
+
+    private static class IndexWordCollection extends AbstractList<String> {
         List<IndexEntry> indexEntries;
 
         private IndexWordCollection(List<IndexEntry> indexEntries) {
