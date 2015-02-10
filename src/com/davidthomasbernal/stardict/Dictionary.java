@@ -38,10 +38,6 @@ public class Dictionary {
 
         File index = new File(ifoPath, name + ".idx");
         boolean hasIdx = index.exists() && index.isFile();
-        if (!hasIdx) {
-            index = new File(index, ".gz");
-            hasIdx = index.exists() && index.isFile();
-        }
 
         if (!hasIdx) {
             throw new IllegalArgumentException("Idx file does not exist");
@@ -49,23 +45,24 @@ public class Dictionary {
 
         File dict = new File(ifoPath, name + ".dict");
         boolean hasDict = false;
-        hasDict = index.exists() && index.isFile();
+        hasDict = dict.exists() && dict.isFile();
 
         if (!hasDict) {
-            dict = new File(dict, ".dz");
-            hasDict = index.exists() && index.isFile();
+            dict = new File(ifoPath, name + ".dict.dz");
+            hasDict = dict.exists() && dict.isFile();
         }
 
         if (!hasDict) {
-            throw new IllegalArgumentException("Idx file does not exist");
+            throw new IllegalArgumentException("Dict file does not exist");
         }
 
         IfoParser parser = new IfoParser(ifo);
         DictionaryInfo dictionaryInfo = parser.parse();
+        DictionaryIndex dictionaryIndex = new DictionaryIndex(index, dictionaryInfo);
         return new Dictionary(
                 dictionaryInfo,
-                new DictionaryIndex(index, dictionaryInfo),
-                null
+                dictionaryIndex,
+                new DictionaryDefinitions(dict, dictionaryIndex, dictionaryInfo)
         );
     }
 
