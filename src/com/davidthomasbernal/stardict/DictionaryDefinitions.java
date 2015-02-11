@@ -6,6 +6,9 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.zip.DataFormatException;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
 
 public class DictionaryDefinitions {
 
@@ -25,7 +28,7 @@ public class DictionaryDefinitions {
 
     private static final int BUFFER_SIZE = 1024 * 1024;
 
-    public DictionaryDefinitions(File dict, DictionaryIndex dictionaryIndex, DictionaryInfo dictionaryInfo) throws IOException {
+    public DictionaryDefinitions(File dict, DictionaryIndex dictionaryIndex, DictionaryInfo dictionaryInfo) throws IOException, DataFormatException {
         this.dictionaryIndex = dictionaryIndex;
         this.dictionaryInfo = dictionaryInfo;
 
@@ -38,7 +41,7 @@ public class DictionaryDefinitions {
         initialize();
     }
 
-    private void initialize() {
+    private void initialize() throws DataFormatException {
         // ok, so we read a short, because we only want to read two bytes. But java doesn't have unsigned types, so
         // the short gets interpreted as a negative number (the high bit indicates the sign.) When we cast to an int,
         // the upper bit from the short is copied over to the upper bit of the integer to preserve the sign ("sign
@@ -70,9 +73,32 @@ public class DictionaryDefinitions {
         short xfl = getUnsignedByte();
         short os = getUnsignedByte();
 
-        int xlen = getUnsignedShort();
-        byte[] extraData = new byte[xlen];
-        buffer.get(extraData);
+        skipToRAData();
+
+        int raRemainingSize = getUnsignedShort();
+        int version = getUnsignedShort();
+        raRemainingSize -= 2;
+        if (version != 1) {
+            throw new RuntimeException("Unknown dict.dz version!");
+        }
+
+        int chlen = getUnsignedShort();
+        raRemainingSize -= 2;
+
+        int chcnt = getUnsignedShort();
+        raRemainingSize -= 2;
+
+        if (raRemainingSize != chcnt * 2) {
+            throw new RuntimeException("Subfield size remaining too small for chunk count");
+        }
+
+        int[] chunks = new int[chcnt];
+        for (int i = 0; i < chcnt; i++) {
+            chunks[i] = getUnsignedShort();
+        }
+
+        byte [] raData = new byte[raRemainingSize];
+        buffer.get(raData);
 
         String filename = null;
         if (hasFileName) {
@@ -92,6 +118,16 @@ public class DictionaryDefinitions {
         // here we are, we're at the first data blog omg this is great.
         // store the position so that we can use it to look up some fucking words later, hell yeah
         dataOffset = buffer.position();
+
+        byte [] firstChunk = new byte[chunks[0] + 1];
+        buffer.get(firstChunk);
+
+        Inflater inflater = new Inflater(true);
+        inflater.setInput(firstChunk);
+
+        byte[] output = new byte[chlen];
+        int bytes = inflater.inflate(output);
+        System.out.println(bytes);
     }
 
     protected int getUnsignedShort() {
@@ -113,5 +149,29 @@ public class DictionaryDefinitions {
             stringBytes.write(b);
         }
         return new String(stringBytes.toByteArray(), StandardCharsets.ISO_8859_1);
+    }
+
+    protected void skipToRAData() {
+        int xlen = getUnsignedShort();
+
+        boolean foundRaField = false;
+
+        int bytesRead = 0;
+        while (bytesRead < xlen) {
+            int subFieldId = getUnsignedShort();
+            bytesRead += 2;
+
+            if (subFieldId == 0x4152 /* RA for random access, but backwards b/c little endian */) {
+                break;
+            } else {
+                int subFieldLength = getUnsignedShort();
+                bytesRead += 2;
+
+                byte[] subFieldData = new byte[subFieldLength];
+
+                buffer.get(subFieldData);
+                bytesRead += subFieldLength;
+            }
+        }
     }
 }

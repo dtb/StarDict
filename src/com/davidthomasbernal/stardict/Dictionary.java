@@ -3,6 +3,7 @@ package com.davidthomasbernal.stardict;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.zip.DataFormatException;
 
 public class Dictionary {
 
@@ -19,7 +20,7 @@ public class Dictionary {
      * @param path
      * @return
      */
-    public static Dictionary fromIfo(String path) throws IOException {
+    public static Dictionary fromIfo(String path) throws IOException, DataFormatException {
         File ifo = new File(path);
         String abs = ifo.getAbsolutePath();
 
