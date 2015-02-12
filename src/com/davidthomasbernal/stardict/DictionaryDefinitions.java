@@ -73,32 +73,39 @@ public class DictionaryDefinitions {
         short xfl = getUnsignedByte();
         short os = getUnsignedByte();
 
-        skipToRAData();
+        int remainingExtra = skipToRAData();
+        int raRead = 0;
 
-        int raRemainingSize = getUnsignedShort();
+        int raSize = getUnsignedShort();
+        raRead += 2;
+
         int version = getUnsignedShort();
-        raRemainingSize -= 2;
+        raRead += 2;
+
         if (version != 1) {
             throw new RuntimeException("Unknown dict.dz version!");
         }
 
         int chlen = getUnsignedShort();
-        raRemainingSize -= 2;
+        raRead += 2;
 
         int chcnt = getUnsignedShort();
-        raRemainingSize -= 2;
+        raRead += 2;
 
-        if (raRemainingSize != chcnt * 2) {
+        if ((raSize - (raRead - 2)) != chcnt * 2) {
             throw new RuntimeException("Subfield size remaining too small for chunk count");
         }
 
         int[] chunks = new int[chcnt];
         for (int i = 0; i < chcnt; i++) {
             chunks[i] = getUnsignedShort();
+            raRead += 2;
         }
 
-        byte [] raData = new byte[raRemainingSize];
-        buffer.get(raData);
+        // skip through the rest of extraData
+        for(int i = 0; i < (remainingExtra - raRead); i++) {
+            getUnsignedByte();
+        }
 
         String filename = null;
         if (hasFileName) {
@@ -151,7 +158,7 @@ public class DictionaryDefinitions {
         return new String(stringBytes.toByteArray(), StandardCharsets.ISO_8859_1);
     }
 
-    protected void skipToRAData() {
+    protected int skipToRAData() {
         int xlen = getUnsignedShort();
 
         boolean foundRaField = false;
@@ -173,5 +180,7 @@ public class DictionaryDefinitions {
                 bytesRead += subFieldLength;
             }
         }
+
+        return xlen - bytesRead;
     }
 }
