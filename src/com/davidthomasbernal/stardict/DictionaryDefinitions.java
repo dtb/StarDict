@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.zip.DataFormatException;
 import java.util.zip.GZIPInputStream;
@@ -22,21 +23,43 @@ public class DictionaryDefinitions {
     private static final int FORMAT_FNAME = 8;
     private static final int FORMAT_COMMENT = 16;
 
+    /* "RA" for random access, but backwards b/c little endian */
+    private static final int RA_ID = 0x4152;
+
+    private static final int GZIP_ID = 0x8B1F;
+
     private final DictionaryInfo dictionaryInfo;
-    private final DictionaryIndex dictionaryIndex;
     private final ByteBuffer buffer;
+
+    private int[] chunks;
+    private String filename;
 
     private static final int BUFFER_SIZE = 1024 * 1024;
 
-    public DictionaryDefinitions(File dict, DictionaryIndex dictionaryIndex, DictionaryInfo dictionaryInfo) throws IOException, DataFormatException {
-        this.dictionaryIndex = dictionaryIndex;
+    // for testing
+    public int[] getChunks() {
+        return chunks.clone();
+    }
+
+    // for testing
+    public String getFilename() {
+        return filename;
+    }
+
+    public DictionaryDefinitions(ByteBuffer buffer, DictionaryInfo dictionaryInfo) throws DataFormatException {
+        this.buffer = buffer;
+        this.dictionaryInfo = dictionaryInfo;
+
+        initialize();
+    }
+
+    public DictionaryDefinitions(File dict, DictionaryInfo dictionaryInfo) throws IOException, DataFormatException {
         this.dictionaryInfo = dictionaryInfo;
 
         RandomAccessFile file = new RandomAccessFile(dict, "r");
         FileChannel channel = file.getChannel();
         buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, BUFFER_SIZE);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
-
 
         initialize();
     }
@@ -48,7 +71,7 @@ public class DictionaryDefinitions {
         // extension".) We never wanted that damned sign bit in the first place, so we & with 0xFFFF to chop off that
         // extra bit
         int id = getUnsignedShort();
-        if (id != 0x8B1F) {
+        if (id != GZIP_ID) {
             throw new RuntimeException("Missing id values in header");
         }
         short compressionMethod = getUnsignedByte();
@@ -74,6 +97,10 @@ public class DictionaryDefinitions {
         short os = getUnsignedByte();
 
         int remainingExtra = skipToRAData();
+        if (remainingExtra == -1) {
+            throw new RuntimeException("Failed to find RA data!");
+        }
+
         int raRead = 0;
 
         int raSize = getUnsignedShort();
@@ -96,7 +123,7 @@ public class DictionaryDefinitions {
             throw new RuntimeException("Subfield size remaining too small for chunk count");
         }
 
-        int[] chunks = new int[chcnt];
+        chunks = new int[chcnt];
         for (int i = 0; i < chcnt; i++) {
             chunks[i] = getUnsignedShort();
             raRead += 2;
@@ -107,7 +134,6 @@ public class DictionaryDefinitions {
             getUnsignedByte();
         }
 
-        String filename = null;
         if (hasFileName) {
             filename = getString();
         }
@@ -126,15 +152,15 @@ public class DictionaryDefinitions {
         // store the position so that we can use it to look up some fucking words later, hell yeah
         dataOffset = buffer.position();
 
-        byte [] firstChunk = new byte[chunks[0] + 1];
-        buffer.get(firstChunk);
-
-        Inflater inflater = new Inflater(true);
-        inflater.setInput(firstChunk);
-
-        byte[] output = new byte[chlen];
-        int bytes = inflater.inflate(output);
-        System.out.println(bytes);
+//        byte [] firstChunk = new byte[chunks[0] + 1];
+//        buffer.get(firstChunk);
+//
+//        Inflater inflater = new Inflater(true);
+//        inflater.setInput(firstChunk);
+//
+//        byte[] output = new byte[chlen];
+//        int bytes = inflater.inflate(output);
+//        System.out.println(bytes);
     }
 
     protected int getUnsignedShort() {
@@ -168,7 +194,7 @@ public class DictionaryDefinitions {
             int subFieldId = getUnsignedShort();
             bytesRead += 2;
 
-            if (subFieldId == 0x4152 /* RA for random access, but backwards b/c little endian */) {
+            if (subFieldId == RA_ID) {
                 break;
             } else {
                 int subFieldLength = getUnsignedShort();
@@ -181,6 +207,12 @@ public class DictionaryDefinitions {
             }
         }
 
-        return xlen - bytesRead;
+        int remaining = xlen - bytesRead;
+
+        if (remaining == 0) {
+            return -1;
+        } else {
+            return remaining;
+        }
     }
 }

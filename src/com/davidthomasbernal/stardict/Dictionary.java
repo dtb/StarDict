@@ -63,7 +63,7 @@ public class Dictionary {
         return new Dictionary(
                 dictionaryInfo,
                 dictionaryIndex,
-                new DictionaryDefinitions(dict, dictionaryIndex, dictionaryInfo)
+                new DictionaryDefinitions(dict, dictionaryInfo)
         );
     }
 
