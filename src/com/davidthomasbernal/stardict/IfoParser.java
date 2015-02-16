@@ -18,17 +18,8 @@ class IfoParser {
     public static final int IDX_OFFSET_BITS_INT = 32;
     public static final int IDX_OFFSET_BITS_LONG = 64;
 
-    protected final BufferedReader reader;
-
-    public IfoParser(File ifoFile) throws FileNotFoundException {
-        this.reader = new BufferedReader(new InputStreamReader(new FileInputStream(ifoFile), StandardCharsets.UTF_8));
-    }
-
-    public IfoParser(String ifo) {
-        this.reader = new BufferedReader(new StringReader(ifo));
-    }
-
-    public DictionaryInfo parse() throws IOException {
+    public DictionaryInfo parse(Reader srcReader) throws IOException {
+        BufferedReader reader = new BufferedReader(srcReader);
         DictionaryInfo result = new DictionaryInfo();
 
         try {

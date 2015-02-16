@@ -65,15 +65,11 @@ public class DictionaryDefinitions {
     }
 
     private void initialize() throws DataFormatException {
-        // ok, so we read a short, because we only want to read two bytes. But java doesn't have unsigned types, so
-        // the short gets interpreted as a negative number (the high bit indicates the sign.) When we cast to an int,
-        // the upper bit from the short is copied over to the upper bit of the integer to preserve the sign ("sign
-        // extension".) We never wanted that damned sign bit in the first place, so we & with 0xFFFF to chop off that
-        // extra bit
         int id = getUnsignedShort();
         if (id != GZIP_ID) {
             throw new RuntimeException("Missing id values in header");
         }
+
         short compressionMethod = getUnsignedByte();
         if (compressionMethod != COMPRESSION_METHOD_DEFLATE) {
             throw new RuntimeException("Unknown compression method");
@@ -90,11 +86,10 @@ public class DictionaryDefinitions {
             throw new RuntimeException("I need the dz to have an extra!");
         }
 
-        long mtime = getUnsignedInt();
-
-        // who cares
-        short xfl = getUnsignedByte();
-        short os = getUnsignedByte();
+        // mtime, xfl, os
+        getUnsignedInt();
+        getUnsignedByte();
+        getUnsignedByte();
 
         int remainingExtra = skipToRAData();
         if (remainingExtra == -1) {

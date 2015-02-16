@@ -3,6 +3,8 @@ package com.davidthomasbernal.stardict;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.io.StringReader;
+
 import static org.junit.Assert.*;
 
 public class IfoParserTest {
@@ -20,8 +22,10 @@ public class IfoParserTest {
                 "date=2015-02-02\n" +
                 "sametypesequence=m\n";
 
-        IfoParser parser = new IfoParser(ifo);
-        DictionaryInfo info = parser.parse();
+        StringReader reader = new StringReader(ifo);
+
+        IfoParser parser = new IfoParser();
+        DictionaryInfo info = parser.parse(reader);
 
         assertEquals("2.4.2", info.getVersion());
         assertEquals(15291, info.getWordCount());
@@ -45,8 +49,9 @@ public class IfoParserTest {
                 " date=2015-02-02\n" +
                 " sametypesequence =m\n";
 
-        IfoParser parser = new IfoParser(ifo);
-        DictionaryInfo info = parser.parse();
+        StringReader reader = new StringReader(ifo);
+        IfoParser parser = new IfoParser();
+        DictionaryInfo info = parser.parse(reader);
 
         assertEquals("2.4.2", info.getVersion());
         assertEquals(15291, info.getWordCount());
@@ -63,8 +68,9 @@ public class IfoParserTest {
         String ifo =
                 "idxfilesize=not a number\n";
 
-        IfoParser parser = new IfoParser(ifo);
-        DictionaryInfo info = parser.parse();
+        StringReader reader = new StringReader(ifo);
+        IfoParser parser = new IfoParser();
+        DictionaryInfo info = parser.parse(reader);
     }
 
     @Test(expected=NumberFormatException.class)
@@ -72,8 +78,9 @@ public class IfoParserTest {
         String ifo =
                 "wordcount=not a number\n";
 
-        IfoParser parser = new IfoParser(ifo);
-        DictionaryInfo info = parser.parse();
+        StringReader reader = new StringReader(ifo);
+        IfoParser parser = new IfoParser();
+        DictionaryInfo info = parser.parse(reader);
     }
 
     @Test(expected=RuntimeException.class)
@@ -81,8 +88,9 @@ public class IfoParserTest {
         String ifo =
                 "wordcount: 7212\n";
 
-        IfoParser parser = new IfoParser(ifo);
-        DictionaryInfo info = parser.parse();
+        StringReader reader = new StringReader(ifo);
+        IfoParser parser = new IfoParser();
+        DictionaryInfo info = parser.parse(reader);
     }
 
     @Test(expected=RuntimeException.class)
@@ -98,7 +106,8 @@ public class IfoParserTest {
                 "date=2015-02-02\n" +
                 "sametypesequence=m\n";
 
-        IfoParser parser = new IfoParser(ifo);
-        DictionaryInfo info = parser.parse();
+        StringReader reader = new StringReader(ifo);
+        IfoParser parser = new IfoParser();
+        DictionaryInfo info = parser.parse(reader);
     }
 }

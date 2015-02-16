@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class DictionaryIndexTest {
+public class IdxParserTest {
 
     private DictionaryIndex getDictionaryIndex(List<IndexEntry> entries) throws IOException {
         return getDictionaryIndex(entries, DictionaryInfo.IDX_OFFSET_FORMAT_INT);
@@ -53,7 +53,9 @@ public class DictionaryIndexTest {
 
     private DictionaryIndex getDictionaryIndex(List<IndexEntry> entries, DictionaryInfo info) throws IOException {
         ByteArrayInputStream input = new ByteArrayInputStream(getDictionaryBytes(entries, info));
-        return new DictionaryIndex(input, info);
+
+        IdxParser parser = new IdxParser(info);
+        return parser.parse(input);
     }
 
     public void assertSame(List<IndexEntry> expectedEntries, List<IndexEntry> actualEntries) {
@@ -130,6 +132,8 @@ public class DictionaryIndexTest {
 
         ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes);
 
-        DictionaryIndex index = new DictionaryIndex(byteStream, info);
+        IdxParser parser = new IdxParser(info);
+
+        DictionaryIndex index = parser.parse(byteStream);
     }
 }

@@ -1,7 +1,7 @@
 package com.davidthomasbernal.stardict;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
@@ -57,9 +57,33 @@ public class Dictionary {
             throw new IllegalArgumentException("Dict file does not exist");
         }
 
-        IfoParser parser = new IfoParser(ifo);
-        DictionaryInfo dictionaryInfo = parser.parse();
-        DictionaryIndex dictionaryIndex = new DictionaryIndex(index, dictionaryInfo);
+        Reader ifoReader = null;
+        DictionaryInfo dictionaryInfo = null;
+
+        try {
+            ifoReader = new InputStreamReader(new FileInputStream(ifo), StandardCharsets.UTF_8);
+
+            IfoParser ifoParser = new IfoParser();
+            dictionaryInfo = ifoParser.parse(ifoReader);
+        } finally {
+            if (ifoReader != null) {
+                ifoReader.close();
+            }
+        }
+
+        BufferedInputStream indexStream = null;
+        DictionaryIndex dictionaryIndex = null;
+        try {
+            IdxParser idxParser = new IdxParser(dictionaryInfo);
+
+            indexStream = new BufferedInputStream(new FileInputStream(index));
+            dictionaryIndex = idxParser.parse(indexStream);
+        } finally {
+            if (indexStream != null) {
+                indexStream.close();
+            }
+        }
+
         return new Dictionary(
                 dictionaryInfo,
                 dictionaryIndex,
