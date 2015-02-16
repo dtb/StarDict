@@ -1,8 +1,5 @@
 package com.davidthomasbernal.stardict;
 
-import org.omg.CORBA.DynAnyPackage.Invalid;
-
-import java.io.*;
 import java.util.HashMap;
 
 public class DictionaryInfo {

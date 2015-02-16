@@ -1,15 +1,14 @@
 package com.davidthomasbernal.stardict;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.zip.DataFormatException;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
 
 public class DictionaryDefinitions {
 

@@ -1,6 +1,5 @@
 package com.davidthomasbernal.stardict;
 
-import java.io.*;
 import java.util.*;
 
 public class DictionaryIndex {

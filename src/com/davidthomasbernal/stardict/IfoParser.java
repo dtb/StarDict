@@ -1,9 +1,8 @@
 package com.davidthomasbernal.stardict;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.StandardCharsets;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
 
 class IfoParser {
     public static final String BOOK_NAME = "bookname";

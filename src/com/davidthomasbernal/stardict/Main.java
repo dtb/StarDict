@@ -1,7 +1,6 @@
 package com.davidthomasbernal.stardict;
 
-import java.io.*;
-import java.nio.channels.FileLockInterruptionException;
+import java.io.IOException;
 import java.util.zip.DataFormatException;
 
 public class Main {
