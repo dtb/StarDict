@@ -15,7 +15,7 @@ public class DictionaryIndex {
         buildIndex();
     }
 
-    public Collection<String> getWords() {
+    public List<String> getWords() {
         return new IndexWordCollection(entries);
     }
 
@@ -28,7 +28,11 @@ public class DictionaryIndex {
     }
 
     public List<IndexEntry> getWordEntries(String word) {
-        return entryMap.get(word);
+        if (entryMap.containsKey(word)) {
+            return entryMap.get(word);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     private void buildIndex() {

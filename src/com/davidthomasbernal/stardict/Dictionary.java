@@ -2,7 +2,9 @@ package com.davidthomasbernal.stardict;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
@@ -114,13 +116,13 @@ public class Dictionary {
         List<IndexEntry> entries = index.getWordEntries(word);
 
         if (entries.size() == 0) {
-            return null;
+            return Collections.emptyList();
         } else {
             return definitions.getDefinitions(entries.get(0));
         }
     }
 
-    public Collection<String> getWords() {
+    public List<String> getWords() {
         return index.getWords();
     }
 

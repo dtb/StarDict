@@ -44,16 +44,6 @@ public class DictionaryDefinitions {
         // here we are, we're at the first data blog omg this is great.
         // store the position so that we can use it to look up some fucking words later, hell yeah
         dataOffset = buffer.position();
-
-//        byte [] firstChunk = new byte[chunks[0] + 1];
-//        buffer.get(firstChunk);
-//
-//        Inflater inflater = new Inflater(true);
-//        inflater.setInput(firstChunk);
-//
-//        byte[] output = new byte[chlen];
-//        int bytes = inflater.inflate(output);
-//        System.out.println(bytes);
     }
 
     public List<String> getDefinitions(IndexEntry entry) throws DataFormatException, IOException {
@@ -72,10 +62,7 @@ public class DictionaryDefinitions {
 
         int chunkOffset = (int) entry.dataOffset - firstChunk * header.getChlen();
 
-        LinkedList<String> defs = new LinkedList<String>();
-        defs.add(readString(chunkData, chunkOffset));
-
-        return defs;
+        return readDefinitions(chunkData, chunkOffset, (int) entry.dataSize);
     }
 
     protected void readChunkAtIndex(int chunkIndex, byte[] outputBuffer, int writeOffset) throws DataFormatException {
@@ -100,19 +87,25 @@ public class DictionaryDefinitions {
         return offset;
     }
 
-    public String readString(byte[] bytes, int startIndex) throws IOException {
-        int wordByte;
-        int wordIndex = startIndex;
+    protected List<String> readDefinitions(byte[] bytes, int startIndex, int maxBytes) {
+        List<String> strings = new LinkedList<String>();
 
-        while (bytes[wordIndex++] != 0) {
-            char character = (char) (bytes[wordIndex] & 0xFF);
-            System.out.print(character);
-            if (wordIndex >= bytes.length) {
-                throw new WordStringFormatException("Failed to reach end of word before reaching end of string.");
+        int bytesRead = 0;
+        int wordStartIndex = startIndex;
+        while (bytesRead < maxBytes) {
+            bytesRead++;
+            if (bytes[startIndex + bytesRead] == 0) {
+                strings.add(new String(bytes, wordStartIndex, startIndex + bytesRead - 1, StandardCharsets.UTF_8));
+                bytesRead++;
+                wordStartIndex = startIndex + bytesRead;
             }
         }
 
-        return new String(bytes, 0, wordIndex, StandardCharsets.UTF_8);
+        if (startIndex + bytesRead - wordStartIndex > 0) {
+            strings.add(new String(bytes, wordStartIndex, startIndex + bytesRead - wordStartIndex, StandardCharsets.UTF_8));
+        }
+
+        return strings;
     }
 
 
