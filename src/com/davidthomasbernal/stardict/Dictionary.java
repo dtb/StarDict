@@ -2,6 +2,7 @@ package com.davidthomasbernal.stardict;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
@@ -106,15 +107,21 @@ public class Dictionary {
     }
 
     public boolean containsWord(String word) {
-        return false;
+        return index.containsWord(word);
     }
 
-    public List<String> getDefinitions(String word) {
-        return null;
+    public List<String> getDefinitions(String word) throws DataFormatException, IOException {
+        List<IndexEntry> entries = index.getWordEntries(word);
+
+        if (entries.size() == 0) {
+            return null;
+        } else {
+            return definitions.getDefinitions(entries.get(0));
+        }
     }
 
-    public List<String> getWords() {
-        return null;
+    public Collection<String> getWords() {
+        return index.getWords();
     }
 
     public List<String> searchForWord(String search) {

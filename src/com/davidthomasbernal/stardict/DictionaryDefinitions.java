@@ -1,14 +1,14 @@
 package com.davidthomasbernal.stardict;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 public class DictionaryDefinitions {
 
@@ -18,8 +18,6 @@ public class DictionaryDefinitions {
     private final ByteBuffer buffer;
 
     private DzHeader header;
-
-    private static final int BUFFER_SIZE = 1024 * 1024;
 
     public DictionaryDefinitions(ByteBuffer buffer, DictionaryInfo dictionaryInfo) throws DataFormatException {
         this.buffer = buffer;
@@ -33,7 +31,7 @@ public class DictionaryDefinitions {
 
         RandomAccessFile file = new RandomAccessFile(dict, "r");
         FileChannel channel = file.getChannel();
-        buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, BUFFER_SIZE);
+        buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         initialize();
@@ -57,5 +55,65 @@ public class DictionaryDefinitions {
 //        int bytes = inflater.inflate(output);
 //        System.out.println(bytes);
     }
+
+    public List<String> getDefinitions(IndexEntry entry) throws DataFormatException, IOException {
+        int firstChunk = (int) (entry.dataOffset / header.getChlen());
+        int lastChunk = (int) ((entry.dataOffset + entry.dataSize) / header.getChlen());
+
+        int totalChunks = 1 + (firstChunk - lastChunk);
+
+        byte[] chunkData = new byte[totalChunks * header.getChlen()];
+
+        for (int chunkIndex = firstChunk, bytesRead = 0;
+             chunkIndex <= lastChunk;
+             chunkIndex++, bytesRead += header.getChlen()) {
+            readChunkAtIndex(chunkIndex, chunkData, bytesRead);
+        }
+
+        int chunkOffset = (int) entry.dataOffset - firstChunk * header.getChlen();
+
+        LinkedList<String> defs = new LinkedList<String>();
+        defs.add(readString(chunkData, chunkOffset));
+
+        return defs;
+    }
+
+    protected void readChunkAtIndex(int chunkIndex, byte[] outputBuffer, int writeOffset) throws DataFormatException {
+        int offset = getChunkOffset(chunkIndex);
+
+        byte[] chunk = new byte[header.getRaChunks()[chunkIndex]];
+        buffer.position(offset);
+        buffer.get(chunk);
+
+        Inflater inflater = new Inflater(true);
+        inflater.setInput(chunk);
+
+        inflater.inflate(outputBuffer, writeOffset, header.getChlen());
+    }
+
+    protected int getChunkOffset(int chunkIndex) {
+        int offset = dataOffset;
+        for (int i = 0; i < chunkIndex; i++) {
+            offset += header.getRaChunks()[i];
+        }
+
+        return offset;
+    }
+
+    public String readString(byte[] bytes, int startIndex) throws IOException {
+        int wordByte;
+        int wordIndex = startIndex;
+
+        while (bytes[wordIndex++] != 0) {
+            char character = (char) (bytes[wordIndex] & 0xFF);
+            System.out.print(character);
+            if (wordIndex >= bytes.length) {
+                throw new WordStringFormatException("Failed to reach end of word before reaching end of string.");
+            }
+        }
+
+        return new String(bytes, 0, wordIndex, StandardCharsets.UTF_8);
+    }
+
 
 }

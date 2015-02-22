@@ -10,5 +10,6 @@ public class Main {
 
         System.out.println(dictionary.getName());
         System.out.println(dictionary.getWordCount());
+        System.out.println(dictionary.getDefinitions("Pathos"));
     }
 }
