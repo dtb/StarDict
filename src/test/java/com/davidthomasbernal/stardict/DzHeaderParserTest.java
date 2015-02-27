@@ -1,5 +1,7 @@
 package com.davidthomasbernal.stardict;
 
+import com.davidthomasbernal.stardict.DzHeader;
+import com.davidthomasbernal.stardict.DzHeaderParser;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;

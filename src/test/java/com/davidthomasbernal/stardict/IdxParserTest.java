@@ -1,5 +1,6 @@
 package com.davidthomasbernal.stardict;
 
+import com.davidthomasbernal.stardict.*;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;

@@ -1,5 +1,6 @@
 package com.davidthomasbernal.stardict;
 
+import com.davidthomasbernal.stardict.DictionaryInfo;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
