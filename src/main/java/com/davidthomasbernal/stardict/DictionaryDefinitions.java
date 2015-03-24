@@ -50,7 +50,7 @@ public class DictionaryDefinitions {
         int firstChunk = (int) (entry.dataOffset / header.getChlen());
         int lastChunk = (int) ((entry.dataOffset + entry.dataSize) / header.getChlen());
 
-        int totalChunks = 1 + (firstChunk - lastChunk);
+        int totalChunks = 1 + (lastChunk - firstChunk);
 
         byte[] chunkData = new byte[totalChunks * header.getChlen()];
 
