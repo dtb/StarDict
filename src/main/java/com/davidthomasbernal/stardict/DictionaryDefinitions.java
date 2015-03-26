@@ -102,7 +102,8 @@ public class DictionaryDefinitions {
         }
 
         if (startIndex + bytesRead - wordStartIndex > 0) {
-            strings.add(new String(bytes, wordStartIndex, startIndex + bytesRead - wordStartIndex, StandardCharsets.UTF_8));
+            String def = new String(bytes, wordStartIndex, startIndex + bytesRead - wordStartIndex, StandardCharsets.UTF_8);
+            strings.add(def.trim());
         }
 
         return strings;
