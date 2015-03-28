@@ -9,5 +9,5 @@ lazy val root = (project in file(".")).
     name := "StarDict",
     libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % "test",
     crossPaths := false,
-    javacOptions += "-g"
+    javacOptions in (Compile, compile) += "-g"
   )
