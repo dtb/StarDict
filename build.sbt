@@ -8,6 +8,7 @@ lazy val root = (project in file(".")).
 	settings(
     name := "StarDict",
     libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % "test",
+    autoScalaLibrary := false,
     crossPaths := false,
     javacOptions in (Compile, compile) += "-g"
   )
