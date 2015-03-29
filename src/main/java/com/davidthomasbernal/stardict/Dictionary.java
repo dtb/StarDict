@@ -127,6 +127,6 @@ public class Dictionary {
     }
 
     public List<String> searchForWord(String search) {
-        return null;
+        return Collections.emptyList();
     }
 }
