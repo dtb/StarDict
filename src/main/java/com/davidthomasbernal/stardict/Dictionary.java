@@ -127,6 +127,16 @@ public class Dictionary {
     }
 
     public List<String> searchForWord(String search) {
-        return Collections.emptyList();
+        String searchLower = search.toLowerCase();
+        List<String> words = index.getWords();
+
+        List<String> results = new ArrayList<>();
+        for (String word : words) {
+           if (word.toLowerCase().equals(searchLower) || word.toLowerCase().startsWith(searchLower)) {
+               results.add(word);
+           }
+        }
+
+        return results;
     }
 }
