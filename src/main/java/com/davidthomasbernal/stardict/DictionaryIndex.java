@@ -38,10 +38,10 @@ public class DictionaryIndex {
     private void buildIndex() {
         for (IndexEntry entry : entries) {
             if (!entryMap.containsKey(entry.word)) {
-                entryMap.put(entry.word, new LinkedList<IndexEntry>());
+                entryMap.put(entry.word.toLowerCase(), new LinkedList<IndexEntry>());
             }
 
-            entryMap.get(entry.word).add(entry);
+            entryMap.get(entry.word.toLowerCase()).add(entry);
         }
     }
 

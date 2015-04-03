@@ -113,7 +113,7 @@ public class Dictionary {
     }
 
     public List<String> getDefinitions(String word) throws DataFormatException, IOException {
-        List<IndexEntry> entries = index.getWordEntries(word);
+        List<IndexEntry> entries = index.getWordEntries(word.toLowerCase());
 
         if (entries.size() == 0) {
             return Collections.emptyList();
