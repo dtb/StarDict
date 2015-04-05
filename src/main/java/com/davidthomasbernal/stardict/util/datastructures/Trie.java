@@ -1,4 +1,4 @@
-package com.davidthomasbernal.stardict.datastructures;
+package com.davidthomasbernal.stardict.util.datastructures;
 
 import java.util.*;
 

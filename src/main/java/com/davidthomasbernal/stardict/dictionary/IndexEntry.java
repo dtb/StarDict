@@ -1,4 +1,4 @@
-package com.davidthomasbernal.stardict;
+package com.davidthomasbernal.stardict.dictionary;
 
 /**
 * Created by david on 2/8/15.
@@ -10,7 +10,7 @@ public class IndexEntry {
         this.dataSize = dataSize;
     }
 
-    final String word;
-    final long dataOffset;
-    final long dataSize;
+    public final String word;
+    public final long dataOffset;
+    public final long dataSize;
 }

@@ -1,6 +1,6 @@
 package com.davidthomasbernal.stardict;
 
-import com.davidthomasbernal.stardict.datastructures.Trie;
+import com.davidthomasbernal.stardict.util.datastructures.Trie;
 import junit.framework.TestCase;
 
 import java.util.Arrays;

@@ -1,9 +1,15 @@
 package com.davidthomasbernal.stardict;
 
+import com.davidthomasbernal.stardict.dictionary.DictionaryDefinitions;
+import com.davidthomasbernal.stardict.dictionary.DictionaryIndex;
+import com.davidthomasbernal.stardict.dictionary.DictionaryInfo;
+import com.davidthomasbernal.stardict.dictionary.IndexEntry;
+import com.davidthomasbernal.stardict.parsers.IdxParser;
+import com.davidthomasbernal.stardict.parsers.IfoParser;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.zip.DataFormatException;

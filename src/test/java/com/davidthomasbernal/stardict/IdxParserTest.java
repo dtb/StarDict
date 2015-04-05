@@ -1,6 +1,10 @@
 package com.davidthomasbernal.stardict;
 
-import com.davidthomasbernal.stardict.*;
+import com.davidthomasbernal.stardict.dictionary.DictionaryIndex;
+import com.davidthomasbernal.stardict.dictionary.DictionaryInfo;
+import com.davidthomasbernal.stardict.dictionary.IndexEntry;
+import com.davidthomasbernal.stardict.parsers.IdxParser;
+import com.davidthomasbernal.stardict.parsers.IndexFormatException;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;

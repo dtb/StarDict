@@ -1,4 +1,9 @@
-package com.davidthomasbernal.stardict;
+package com.davidthomasbernal.stardict.parsers;
+
+import com.davidthomasbernal.stardict.dictionary.DictionaryIndex;
+import com.davidthomasbernal.stardict.dictionary.DictionaryInfo;
+import com.davidthomasbernal.stardict.dictionary.IndexEntry;
+import com.davidthomasbernal.stardict.util.IndexInputStream;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -9,7 +14,7 @@ import java.util.List;
 /**
  * Created by david on 2/16/15.
  */
-class IdxParser {
+public class IdxParser {
     private final DictionaryInfo dictionaryInfo;
 
     public IdxParser(DictionaryInfo info) {

@@ -1,4 +1,6 @@
-package com.davidthomasbernal.stardict;
+package com.davidthomasbernal.stardict.dictionary;
+
+import com.davidthomasbernal.stardict.dictionary.IndexEntry;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package com.davidthomasbernal.stardict;
+package com.davidthomasbernal.stardict.util;
 
 import java.io.DataInputStream;
 import java.io.EOFException;

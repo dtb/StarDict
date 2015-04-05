@@ -1,4 +1,4 @@
-package com.davidthomasbernal.stardict;
+package com.davidthomasbernal.stardict.dictionary;
 
 /**
  * Created by david on 2/16/15.

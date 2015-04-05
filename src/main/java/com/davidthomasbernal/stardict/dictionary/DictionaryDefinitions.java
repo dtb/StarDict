@@ -1,4 +1,6 @@
-package com.davidthomasbernal.stardict;
+package com.davidthomasbernal.stardict.dictionary;
+
+import com.davidthomasbernal.stardict.parsers.DzHeaderParser;
 
 import java.io.*;
 import java.nio.ByteBuffer;

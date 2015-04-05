@@ -1,9 +1,8 @@
 package com.davidthomasbernal.stardict;
 
-import com.davidthomasbernal.stardict.DictionaryInfo;
-import com.davidthomasbernal.stardict.IfoParser;
+import com.davidthomasbernal.stardict.dictionary.DictionaryInfo;
+import com.davidthomasbernal.stardict.parsers.IfoParser;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.io.StringReader;
 

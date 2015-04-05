@@ -1,4 +1,4 @@
-package com.davidthomasbernal.stardict;
+package com.davidthomasbernal.stardict.dictionary;
 
 import java.util.HashMap;
 

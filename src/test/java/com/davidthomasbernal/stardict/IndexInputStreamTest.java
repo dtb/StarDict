@@ -1,7 +1,7 @@
 package com.davidthomasbernal.stardict;
 
-import com.davidthomasbernal.stardict.IndexInputStream;
-import com.davidthomasbernal.stardict.WordStringFormatException;
+import com.davidthomasbernal.stardict.util.IndexInputStream;
+import com.davidthomasbernal.stardict.util.WordStringFormatException;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;

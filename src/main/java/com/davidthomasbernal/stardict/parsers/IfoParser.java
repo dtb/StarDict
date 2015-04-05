@@ -1,10 +1,12 @@
-package com.davidthomasbernal.stardict;
+package com.davidthomasbernal.stardict.parsers;
+
+import com.davidthomasbernal.stardict.dictionary.DictionaryInfo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
-class IfoParser {
+public class IfoParser {
     public static final String BOOK_NAME = "bookname";
     public static final String WORD_COUNT = "wordcount";
     public static final String SYN_WORD_COUNT = "synwordcount";

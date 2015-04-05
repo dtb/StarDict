@@ -1,4 +1,6 @@
-package com.davidthomasbernal.stardict;
+package com.davidthomasbernal.stardict.parsers;
+
+import com.davidthomasbernal.stardict.dictionary.DzHeader;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
@@ -7,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Created by david on 2/16/15.
  */
-class DzHeaderParser {
+public class DzHeaderParser {
     public DzHeader parse(ByteBuffer buffer) {
         DzHeaderMut header = new DzHeaderMut();
 
