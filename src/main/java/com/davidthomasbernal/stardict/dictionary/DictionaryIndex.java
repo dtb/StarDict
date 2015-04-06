@@ -39,11 +39,12 @@ public class DictionaryIndex {
 
     private void buildIndex() {
         for (IndexEntry entry : entries) {
-            if (!entryMap.containsKey(entry.word)) {
-                entryMap.put(entry.word.toLowerCase(), new LinkedList<IndexEntry>());
+            String indexWord = entry.word.toLowerCase();
+            if (!entryMap.containsKey(indexWord)) {
+                entryMap.put(indexWord, new LinkedList<IndexEntry>());
             }
 
-            entryMap.get(entry.word.toLowerCase()).add(entry);
+            entryMap.get(indexWord).add(entry);
         }
     }
 
