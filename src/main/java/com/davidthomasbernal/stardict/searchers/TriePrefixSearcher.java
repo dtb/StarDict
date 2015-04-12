@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class TriePrefixSearcher {
     protected final Dictionary dictionary;
-    private final Trie trie = new Trie();
+    private final Trie<Object> trie = new Trie<>();
     private boolean trieInitialized = false;
 
     public TriePrefixSearcher(Dictionary dictionary) {
@@ -21,7 +21,7 @@ public class TriePrefixSearcher {
         if (!trieInitialized) {
             List<String> words = this.dictionary.getWords();
             for (String word : words) {
-                trie.addWord(word);
+                trie.addWord(word, null);
             }
             trieInitialized = true;
         }

@@ -9,7 +9,7 @@ import java.util.List;
 public class TrieTest extends TestCase {
 
     public void testAddWord() throws Exception {
-        Trie trie = new Trie();
+        Trie<Object> trie = new Trie<>();
         String [] words = new String[] {
                 "cat",
                 "car",
@@ -20,33 +20,33 @@ public class TrieTest extends TestCase {
         };
 
         for(String word: words) {
-            trie.addWord(word);
+            trie.addWord(word, null);
         }
         // I guess we just care that no exception is throw :/
     }
 
     public void testContainsWord() throws Exception {
-        Trie trie = new Trie();
-        trie.addWord("cat");
+        Trie<Object> trie = new Trie<>();
+        trie.addWord("cat", null);
 
         assertTrue(trie.containsWord("cat"));
         assertFalse(trie.containsWord("car"));
         assertFalse(trie.containsWord("c"));
 
-        trie.addWord("a");
-        trie.addWord("am");
+        trie.addWord("a", null);
+        trie.addWord("am", null);
         assertTrue(trie.containsWord("a"));
         assertTrue(trie.containsWord("am"));
         assertFalse(trie.containsWord("at"));
     }
 
     public void testPrefixSearch() throws Exception {
-        Trie trie = new Trie();
-        trie.addWord("cat");
-        trie.addWord("car");
-        trie.addWord("can");
-        trie.addWord("clear");
-        trie.addWord("house");
+        Trie<Object> trie = new Trie<>();
+        trie.addWord("cat", null);
+        trie.addWord("car", null);
+        trie.addWord("can", null);
+        trie.addWord("clear", null);
+        trie.addWord("house", null);
 
         List<String> words = trie.prefixSearch("cat");
         assertTrue(words.size() == 1);
@@ -62,10 +62,23 @@ public class TrieTest extends TestCase {
     }
 
     public void testPrefixSearchNoMatches() throws Exception {
-        Trie trie = new Trie();
+        Trie<Object> trie = new Trie<>();
         assertTrue(trie.prefixSearch("ca").size() == 0);
 
-        trie.addWord("house");
+        trie.addWord("house", null);
         assertTrue(trie.prefixSearch("ca").size() == 0);
+    }
+
+
+    public void testGet() {
+        Trie<String> trie = new Trie<>();
+
+        assertNull(trie.get("Cow"));
+
+        trie.addWord("Cow", "cow data");
+        trie.addWord("Moose", "moose data");
+        assertEquals(trie.get("Cow"), "cow data");
+        assertEquals(trie.get("Moose"), "moose data");
+        assertEquals(trie.get("Bird"), null);
     }
 }
