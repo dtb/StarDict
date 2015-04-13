@@ -89,7 +89,6 @@ public class TrieMap<T> extends AbstractMap<String, T>{
             if (entry.getKey() == EOW) {
                 Entry<String, T> result = new SimpleImmutableEntry<String, T>(prefix.toString(), entry.getValue().data);
                 words.add(result);
-                return words;
             } else {
                 StringBuilder newPrefix = new StringBuilder(prefix);
                 newPrefix.append(entry.getKey());
@@ -101,7 +100,8 @@ public class TrieMap<T> extends AbstractMap<String, T>{
 
     @Override
     public Set<Entry<String, T>> entrySet() {
-        return searchFrom(root, new StringBuilder(""));
+        Set<Entry<String, T>> entries = searchFrom(root, new StringBuilder(""));
+        return entries;
     }
 
     @Override

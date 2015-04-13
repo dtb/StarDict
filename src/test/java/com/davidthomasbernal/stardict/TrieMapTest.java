@@ -94,4 +94,30 @@ public class TrieMapTest {
         TrieMap<String> trie = new TrieMap<>();
         trie.remove("Cow");
     }
+
+    @Test
+    public void testMapMethods() {
+        TrieMap<String> trie = new TrieMap<>();
+
+        assertEquals(0, trie.size());
+
+        trie.put("cow", "cow data");
+        assertEquals(1, trie.size());
+
+        trie.put("cowl", "cow data");
+        trie.put("cower", "cow data");
+        trie.put("crow", "cow data");
+
+        assertEquals(4, trie.size());
+
+        trie.put("horse", "horse data");
+
+        assertEquals(5, trie.size());
+
+        String[] expected = new String[] { "cow", "cowl", "cower", "crow", "horse" };
+        String[] actual = trie.keySet().toArray(new String[trie.keySet().size()]);
+        Arrays.sort(actual);
+        Arrays.sort(expected);
+        assertArrayEquals(expected, actual);
+    }
 }
