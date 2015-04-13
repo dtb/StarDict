@@ -1,7 +1,7 @@
 package com.davidthomasbernal.stardict.searchers;
 
 import com.davidthomasbernal.stardict.Dictionary;
-import com.davidthomasbernal.stardict.util.datastructures.Trie;
+import com.davidthomasbernal.stardict.util.datastructures.TrieMap;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class TriePrefixSearcher {
     protected final Dictionary dictionary;
-    private final Trie<Object> trie = new Trie<>();
+    private final TrieMap<Object> trie = new TrieMap<>();
     private boolean trieInitialized = false;
 
     public TriePrefixSearcher(Dictionary dictionary) {
@@ -21,7 +21,7 @@ public class TriePrefixSearcher {
         if (!trieInitialized) {
             List<String> words = this.dictionary.getWords();
             for (String word : words) {
-                trie.addWord(word, null);
+                trie.put(word, null);
             }
             trieInitialized = true;
         }
