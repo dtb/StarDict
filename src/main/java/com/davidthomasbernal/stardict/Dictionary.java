@@ -6,12 +6,11 @@ import com.davidthomasbernal.stardict.dictionary.DictionaryInfo;
 import com.davidthomasbernal.stardict.dictionary.IndexEntry;
 import com.davidthomasbernal.stardict.parsers.IdxParser;
 import com.davidthomasbernal.stardict.parsers.IfoParser;
+import com.davidthomasbernal.stardict.parsers.SynParser;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.zip.DataFormatException;
 
 public class Dictionary {
@@ -66,6 +65,13 @@ public class Dictionary {
             throw new IllegalArgumentException("Dict file does not exist");
         }
 
+        File syn = new File(ifoPath, name + ".syn");
+        boolean hasSyn = syn.exists() && syn.isFile();
+
+        if (!hasSyn) {
+            throw new IllegalArgumentException("Idx file does not exist");
+        }
+
         Reader ifoReader = null;
         DictionaryInfo dictionaryInfo = null;
 
@@ -80,16 +86,30 @@ public class Dictionary {
             }
         }
 
-        BufferedInputStream indexStream = null;
+        BufferedInputStream stream = null;
         DictionaryIndex dictionaryIndex = null;
+
         try {
             IdxParser idxParser = new IdxParser(dictionaryInfo);
 
-            indexStream = new BufferedInputStream(new FileInputStream(index));
-            dictionaryIndex = idxParser.parse(indexStream);
+            stream = new BufferedInputStream(new FileInputStream(index));
+            dictionaryIndex = idxParser.parse(stream);
         } finally {
-            if (indexStream != null) {
-                indexStream.close();
+            if (stream != null) {
+                stream.close();
+            }
+        }
+
+        if (hasSyn) {
+            try {
+                SynParser parser = new SynParser(dictionaryInfo, dictionaryIndex);
+
+                stream = new BufferedInputStream(new FileInputStream(syn));
+                parser.parse(stream);
+            } finally {
+                if (stream != null) {
+                    stream.close();
+                }
             }
         }
 
@@ -128,15 +148,15 @@ public class Dictionary {
         }
     }
 
-    public List<String> getWords() {
+    public Set<String> getWords() {
         return index.getWords();
     }
 
-    public List<String> searchForWord(String search) {
+    public Set<String> searchForWord(String search) {
         String searchLower = search.toLowerCase();
-        List<String> words = index.getWords();
+        Set<String> words = index.getWords();
 
-        List<String> results = new ArrayList<>();
+        Set<String> results = new LinkedHashSet<>();
         for (String word : words) {
            if (word.toLowerCase().equals(searchLower) || word.toLowerCase().startsWith(searchLower)) {
                results.add(word);

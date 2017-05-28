@@ -3,6 +3,7 @@ package com.davidthomasbernal.stardict;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.DataFormatException;
 
 public class Main {
@@ -17,7 +18,7 @@ public class Main {
         };
         for (String word : words) {
             long start = System.nanoTime();
-            List<String> res = dictionary.searchForWord(word);
+            Set<String> res = dictionary.searchForWord(word);
             long duration = (System.nanoTime() - start) / 1000000;
             System.out.println(String.format("That took %d ms", duration));
         }
