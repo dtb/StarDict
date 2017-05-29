@@ -37,7 +37,8 @@ public class IdxParserTest {
         DataOutputStream ds = new DataOutputStream(dictWriter);
 
         for (IndexEntry entry : entries) {
-            byte [] wordBytes = Arrays.copyOf(entry.word.getBytes(StandardCharsets.UTF_8), entry.word.length() + 1);
+            String word = entry.words.iterator().next();
+            byte [] wordBytes = Arrays.copyOf(word.getBytes(StandardCharsets.UTF_8), word.length() + 1);
 
             ds.write(wordBytes, 0, wordBytes.length);
             switch (info.getIdxOffsetFormat()) {
