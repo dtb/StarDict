@@ -4,6 +4,7 @@ import com.davidthomasbernal.stardict.Dictionary;
 import com.davidthomasbernal.stardict.util.datastructures.TrieMap;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by david on 4/5/15.
@@ -19,7 +20,7 @@ public class TriePrefixSearcher {
 
     public void ensureTrie() {
         if (!trieInitialized) {
-            List<String> words = this.dictionary.getWords();
+            Set<String> words = this.dictionary.getWords();
             for (String word : words) {
                 trie.put(word, null);
             }
