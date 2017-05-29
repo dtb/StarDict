@@ -149,6 +149,32 @@ public class Dictionary {
         return index.getWords();
     }
 
+    class DictEntryIterator implements Iterator<DictEntry> {
+        private Iterator<IndexEntry> entries = index.getIndexFileEntries().iterator();
+        @Override
+        public DictEntry next() throws NoSuchElementException {
+            IndexEntry indexEntry = entries.next();
+            try {
+                return new DictEntry(indexEntry.words, definitions.getDefinition(indexEntry));
+            } catch (DataFormatException e) {
+                e.printStackTrace();
+                throw new NoSuchElementException();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new NoSuchElementException();
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return entries.hasNext();
+        }
+    }
+
+    public Iterator<DictEntry> getIterator() {
+        return new DictEntryIterator();
+    }
+
     public Set<String> searchForWord(String search) {
         String searchLower = search.toLowerCase();
         Set<String> words = index.getWords();
