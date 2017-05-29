@@ -7,8 +7,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
@@ -47,8 +49,16 @@ public class DictionaryDefinitions {
         // store the position so that we can use it to look up some fucking words later, hell yeah
         dataOffset = buffer.position();
     }
+    public List<String> getDefinitions(Set<IndexEntry> entries) throws DataFormatException, IOException {
+        List<String> defintions = new ArrayList<>();
+        for (IndexEntry entry :
+             entries) {
+            defintions.add(getDefinition(entry));
+        }
+        return defintions;
+    }
 
-    public List<String> getDefinitions(IndexEntry entry) throws DataFormatException, IOException {
+    public String getDefinition(IndexEntry entry) throws DataFormatException, IOException {
         int firstChunk = (int) (entry.dataOffset / header.getChlen());
         int lastChunk = (int) ((entry.dataOffset + entry.dataSize) / header.getChlen());
 
@@ -64,7 +74,7 @@ public class DictionaryDefinitions {
 
         int chunkOffset = (int) entry.dataOffset - firstChunk * header.getChlen();
 
-        return readDefinitions(chunkData, chunkOffset, (int) entry.dataSize);
+        return readDefinition(chunkData, chunkOffset, (int) entry.dataSize);
     }
 
     protected void readChunkAtIndex(int chunkIndex, byte[] outputBuffer, int writeOffset) throws DataFormatException {
@@ -89,25 +99,25 @@ public class DictionaryDefinitions {
         return offset;
     }
 
-    protected List<String> readDefinitions(byte[] bytes, int startIndex, int maxBytes) {
-        List<String> strings = new LinkedList<String>();
+    protected String readDefinition(byte[] bytes, int startIndex, int maxBytes) {
+        StringBuffer definition = new StringBuffer();
 
         int bytesRead = 0;
         int wordStartIndex = startIndex;
         while (bytesRead < maxBytes) {
             bytesRead++;
             if (bytes[startIndex + bytesRead] == 0) {
-                strings.add(new String(bytes, wordStartIndex, startIndex + bytesRead - 1, StandardCharsets.UTF_8));
+                definition.append(new String(bytes, wordStartIndex, startIndex + bytesRead - 1, StandardCharsets.UTF_8));
                 bytesRead++;
                 wordStartIndex = startIndex + bytesRead;
             }
         }
 
         if (startIndex + bytesRead - wordStartIndex > 0) {
-            strings.add(new String(bytes, wordStartIndex, startIndex + bytesRead - wordStartIndex, StandardCharsets.UTF_8));
+            definition.append(new String(bytes, wordStartIndex, startIndex + bytesRead - wordStartIndex, StandardCharsets.UTF_8));
         }
 
-        return strings;
+        return definition.toString();
     }
 
 

@@ -139,12 +139,12 @@ public class Dictionary {
     }
 
     public List<String> getDefinitions(String word) throws DataFormatException, IOException {
-        List<IndexEntry> entries = index.getWordEntries(word.toLowerCase());
+        Set<IndexEntry> entries = index.getWordEntries(word.toLowerCase());
 
         if (entries.size() == 0) {
             return Collections.emptyList();
         } else {
-            return definitions.getDefinitions(entries.get(0));
+            return definitions.getDefinitions(entries);
         }
     }
 
