@@ -74,7 +74,7 @@ public class DictionaryDefinitions {
 
         int chunkOffset = (int) entry.dataOffset - firstChunk * header.getChlen();
 
-        return readDefinition(chunkData, chunkOffset, (int) entry.dataSize);
+        return new String(chunkData, chunkOffset, (int) entry.dataSize, StandardCharsets.UTF_8);
     }
 
     protected void readChunkAtIndex(int chunkIndex, byte[] outputBuffer, int writeOffset) throws DataFormatException {
@@ -97,27 +97,6 @@ public class DictionaryDefinitions {
         }
 
         return offset;
-    }
-
-    protected String readDefinition(byte[] bytes, int startIndex, int maxBytes) {
-        StringBuffer definition = new StringBuffer();
-
-        int bytesRead = 0;
-        int wordStartIndex = startIndex;
-        while (bytesRead < maxBytes) {
-            bytesRead++;
-            if (bytes[startIndex + bytesRead] == 0) {
-                definition.append(new String(bytes, wordStartIndex, startIndex + bytesRead - 1, StandardCharsets.UTF_8));
-                bytesRead++;
-                wordStartIndex = startIndex + bytesRead;
-            }
-        }
-
-        if (startIndex + bytesRead - wordStartIndex > 0) {
-            definition.append(new String(bytes, wordStartIndex, startIndex + bytesRead - wordStartIndex, StandardCharsets.UTF_8));
-        }
-
-        return definition.toString();
     }
 
 
