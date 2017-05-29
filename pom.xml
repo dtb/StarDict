@@ -96,7 +96,7 @@
         </plugin>
 
         <!-- For maven deployment.
-         To get Javadoc and Source jar files generated, you have to configure the javadoc and source Maven plugins.
+        getIndexFileEntry get Javadoc and Source jar files generated, you have to configure the javadoc and source Maven plugins.
          -->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>

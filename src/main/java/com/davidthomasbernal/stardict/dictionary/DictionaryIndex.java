@@ -4,36 +4,36 @@ import java.util.*;
 import java.util.logging.Logger;
 
 public class DictionaryIndex {
-    private final List<IndexEntry> entries;
+    private final List<IndexEntry> indexFileEntries;
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
-    // Updated also with entries frm the synonyms file, if present.
+    // Updated also with indexFileEntries frm the synonyms file, if present.
     private final Map<String, Set<IndexEntry>> entryMap;
 
-    public DictionaryIndex(List<IndexEntry> entries) {
-        this.entries = new ArrayList<IndexEntry>(entries);
-        entryMap = new HashMap<String, Set<IndexEntry>>(this.entries.size());
+    public DictionaryIndex(List<IndexEntry> indexFileEntries) {
+        this.indexFileEntries = new ArrayList<IndexEntry>(indexFileEntries);
+        entryMap = new HashMap<String, Set<IndexEntry>>(this.indexFileEntries.size());
 
-        addToIndex(entries);
+        addToIndex(indexFileEntries);
     }
 
     public Set<String> getWords() {
         return entryMap.keySet();
     }
 
-    public List<IndexEntry> getWordEntries() {
-        return Collections.unmodifiableList(entries);
+    public List<IndexEntry> getIndexFileEntries() {
+        return Collections.unmodifiableList(indexFileEntries);
     }
 
-    public IndexEntry get(int index) {
-        return entries.get(index);
+    public IndexEntry getIndexFileEntry(int index) {
+        return indexFileEntries.get(index);
     }
 
     public boolean containsWord(String searchWord) {
         return entryMap.containsKey(searchWord);
     }
 
-    public Set<IndexEntry> getWordEntries(String word) {
+    public Set<IndexEntry> getIndexFileEntries(String word) {
         if (entryMap.containsKey(word)) {
             return entryMap.get(word);
         } else {

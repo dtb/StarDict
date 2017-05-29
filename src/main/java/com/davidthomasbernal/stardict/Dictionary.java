@@ -1,9 +1,6 @@
 package com.davidthomasbernal.stardict;
 
-import com.davidthomasbernal.stardict.dictionary.DictionaryDefinitions;
-import com.davidthomasbernal.stardict.dictionary.DictionaryIndex;
-import com.davidthomasbernal.stardict.dictionary.DictionaryInfo;
-import com.davidthomasbernal.stardict.dictionary.IndexEntry;
+import com.davidthomasbernal.stardict.dictionary.*;
 import com.davidthomasbernal.stardict.parsers.IdxParser;
 import com.davidthomasbernal.stardict.parsers.IfoParser;
 import com.davidthomasbernal.stardict.parsers.SynParser;
@@ -139,7 +136,7 @@ public class Dictionary {
     }
 
     public List<String> getDefinitions(String word) throws DataFormatException, IOException {
-        Set<IndexEntry> entries = index.getWordEntries(word.toLowerCase());
+        Set<IndexEntry> entries = index.getIndexFileEntries(word.toLowerCase());
 
         if (entries.size() == 0) {
             return Collections.emptyList();

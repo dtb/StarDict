@@ -79,7 +79,7 @@ public class IdxParserTest {
 
         DictionaryIndex index = getDictionaryIndex(expectedEntries);
 
-        List<IndexEntry> actualEntries = index.getWordEntries();
+        List<IndexEntry> actualEntries = index.getIndexFileEntries();
 
         assertSame(expectedEntries, actualEntries);
     }
@@ -92,7 +92,7 @@ public class IdxParserTest {
 
         DictionaryIndex index = getDictionaryIndex(expectedEntries);
 
-        List<IndexEntry> actualEntries = index.getWordEntries();
+        List<IndexEntry> actualEntries = index.getIndexFileEntries();
 
         assertSame(expectedEntries, actualEntries);
     }
@@ -105,7 +105,7 @@ public class IdxParserTest {
 
         DictionaryIndex index = getDictionaryIndex(expectedEntries, DictionaryInfo.IDX_OFFSET_FORMAT_LONG);
 
-        List<IndexEntry> actualEntries = index.getWordEntries();
+        List<IndexEntry> actualEntries = index.getIndexFileEntries();
 
         assertSame(expectedEntries, actualEntries);
     }
@@ -120,7 +120,7 @@ public class IdxParserTest {
         info.setWordCount(50);
         DictionaryIndex index = getDictionaryIndex(expectedEntries, info);
 
-        List<IndexEntry> actualEntries = index.getWordEntries();
+        List<IndexEntry> actualEntries = index.getIndexFileEntries();
 
         assertSame(expectedEntries, actualEntries);
     }

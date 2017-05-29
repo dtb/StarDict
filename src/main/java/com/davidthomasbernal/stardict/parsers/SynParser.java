@@ -6,11 +6,8 @@ import com.davidthomasbernal.stardict.util.IndexInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SynParser {
@@ -45,7 +42,7 @@ public class SynParser {
 
                 int originalWordIndex = indexStream.readInt();
 
-                IndexEntry index = dictionaryIndex.get(originalWordIndex);
+                IndexEntry index = dictionaryIndex.getIndexFileEntry(originalWordIndex);
                 index.words.add(word);
                 entries.add(index);
 //                logger.log(Level.FINE, word + " " + originalWordIndex + " " + index.words.toString());
