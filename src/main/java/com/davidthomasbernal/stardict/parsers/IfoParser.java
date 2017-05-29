@@ -38,7 +38,7 @@ public class IfoParser {
     }
 
     private void processLine(DictionaryInfo result, String line) {
-        if (line.trim().equals("StarDict's dict ifo file")) {
+        if (line.trim().equals("StarDict's dict ifo file") || line.trim().isEmpty()) {
             return;
         }
 

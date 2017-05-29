@@ -10,10 +10,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SynParser {
     private final DictionaryInfo dictionaryInfo;
     private final DictionaryIndex dictionaryIndex;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     public SynParser(DictionaryInfo info, DictionaryIndex index) {
         this.dictionaryInfo = info;
@@ -45,6 +48,7 @@ public class SynParser {
                 IndexEntry index = dictionaryIndex.get(originalWordIndex);
                 index.words.add(word);
                 entries.add(index);
+//                logger.log(Level.FINE, word + " " + originalWordIndex + " " + index.words.toString());
 
                 if (entries.size() > dictionaryInfo.getSynWordCount()) {
                     throw new IndexFormatException("Found more words than specified in info.");
@@ -60,7 +64,7 @@ public class SynParser {
             throw new IndexFormatException("IOException reading index", exception);
         }
         if (entries.size() != dictionaryInfo.getSynWordCount()) {
-            throw new IndexFormatException("Info and syn word counts did not match.");
+            throw new IndexFormatException("Info and syn word counts did not match: " + entries.size() + " " + dictionaryInfo.getSynWordCount());
         }
 
         return entries;

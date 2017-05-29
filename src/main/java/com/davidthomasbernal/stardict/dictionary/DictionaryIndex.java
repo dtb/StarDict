@@ -1,16 +1,18 @@
 package com.davidthomasbernal.stardict.dictionary;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class DictionaryIndex {
     private final List<IndexEntry> entries;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     // Updated also with entries frm the synonyms file, if present.
-    private final Map<String, List<IndexEntry>> entryMap;
+    private final Map<String, Set<IndexEntry>> entryMap;
 
     public DictionaryIndex(List<IndexEntry> entries) {
         this.entries = new ArrayList<IndexEntry>(entries);
-        entryMap = new HashMap<String, List<IndexEntry>>(this.entries.size());
+        entryMap = new HashMap<String, Set<IndexEntry>>(this.entries.size());
 
         addToIndex(entries);
     }
@@ -31,11 +33,11 @@ public class DictionaryIndex {
         return entryMap.containsKey(searchWord);
     }
 
-    public List<IndexEntry> getWordEntries(String word) {
+    public Set<IndexEntry> getWordEntries(String word) {
         if (entryMap.containsKey(word)) {
             return entryMap.get(word);
         } else {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
     }
 
@@ -43,7 +45,7 @@ public class DictionaryIndex {
         for (IndexEntry entry : entries) {
             for (String word: entry.words) {
                 String indexWord = word.toLowerCase();
-                entryMap.putIfAbsent(indexWord, new LinkedList<IndexEntry>());
+                entryMap.putIfAbsent(indexWord, new LinkedHashSet<>());
                 entryMap.get(indexWord).add(entry);
             }
         }
