@@ -14,10 +14,12 @@ public class SynParser {
     private final DictionaryInfo dictionaryInfo;
     private final DictionaryIndex dictionaryIndex;
     private Logger logger = Logger.getLogger(this.getClass().getName());
+    private boolean tolerateInfoMismatch = false;
 
-    public SynParser(DictionaryInfo info, DictionaryIndex index) {
+    public SynParser(DictionaryInfo info, DictionaryIndex index, boolean tolerateInfoMismatch) {
         this.dictionaryInfo = info;
         this.dictionaryIndex = index;
+        this.tolerateInfoMismatch = tolerateInfoMismatch;
     }
 
     public void parse(InputStream stream) {
@@ -61,7 +63,12 @@ public class SynParser {
             throw new IndexFormatException("IOException reading index", exception);
         }
         if (entries.size() != dictionaryInfo.getSynWordCount()) {
-            throw new IndexFormatException("Info and syn word counts did not match: " + entries.size() + " " + dictionaryInfo.getSynWordCount());
+            String message = "Info and syn word counts did not match: " + entries.size() + " " + dictionaryInfo.getSynWordCount();
+            if (tolerateInfoMismatch) {
+                logger.warning(message);
+            } else {
+                throw new IndexFormatException(message);
+            }
         }
 
         return entries;

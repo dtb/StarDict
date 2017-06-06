@@ -8,6 +8,7 @@ import com.davidthomasbernal.stardict.parsers.SynParser;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 
 public class Dictionary {
@@ -15,6 +16,7 @@ public class Dictionary {
     protected final DictionaryDefinitions definitions;
     protected final DictionaryIndex index;
     protected final DictionaryInfo info;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     /**
      * Make a dictionary, using the ifo at path
@@ -25,7 +27,7 @@ public class Dictionary {
      * @param path
      * @return
      */
-    public static Dictionary fromIfo(String path) throws IOException, DataFormatException {
+    public static Dictionary fromIfo(String path, boolean tolerateInfoMismatch) throws IOException, DataFormatException {
         File ifo = new File(path);
         String abs = ifo.getAbsolutePath();
 
@@ -87,7 +89,7 @@ public class Dictionary {
         DictionaryIndex dictionaryIndex = null;
 
         try {
-            IdxParser idxParser = new IdxParser(dictionaryInfo);
+            IdxParser idxParser = new IdxParser(dictionaryInfo, tolerateInfoMismatch);
 
             stream = new BufferedInputStream(new FileInputStream(index));
             dictionaryIndex = idxParser.parse(stream);
@@ -99,7 +101,7 @@ public class Dictionary {
 
         if (hasSyn) {
             try {
-                SynParser parser = new SynParser(dictionaryInfo, dictionaryIndex);
+                SynParser parser = new SynParser(dictionaryInfo, dictionaryIndex, tolerateInfoMismatch);
 
                 stream = new BufferedInputStream(new FileInputStream(syn));
                 parser.parse(stream);

@@ -60,7 +60,7 @@ public class IdxParserTest {
     private DictionaryIndex getDictionaryIndex(List<IndexEntry> entries, DictionaryInfo info) throws IOException {
         ByteArrayInputStream input = new ByteArrayInputStream(getDictionaryBytes(entries, info));
 
-        IdxParser parser = new IdxParser(info);
+        IdxParser parser = new IdxParser(info, false);
         return parser.parse(input);
     }
 
@@ -138,7 +138,7 @@ public class IdxParserTest {
 
         ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes);
 
-        IdxParser parser = new IdxParser(info);
+        IdxParser parser = new IdxParser(info, false);
 
         DictionaryIndex index = parser.parse(byteStream);
     }
