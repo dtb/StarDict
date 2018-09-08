@@ -75,7 +75,7 @@ public class TrieMap<T> extends AbstractMap<String, T>{
         }
 
         Set<Entry<String, T>> wordEntries = searchFrom(node, new StringBuilder(prefix));
-        List<String> result = new ArrayList<String>(wordEntries.size());
+        List<String> result = new ArrayList<>(wordEntries.size());
         for (Entry<String, T> wordEntry : wordEntries) {
             result.add(wordEntry.getKey());
         }
@@ -87,7 +87,7 @@ public class TrieMap<T> extends AbstractMap<String, T>{
         Set<Entry<String, T>> words = new HashSet<>();
         for (Map.Entry<Character, TreeNode<T>> entry : node.nodes.entrySet()) {
             if (entry.getKey() == EOW) {
-                Entry<String, T> result = new SimpleImmutableEntry<String, T>(prefix.toString(), entry.getValue().data);
+                Entry<String, T> result = new SimpleImmutableEntry<>(prefix.toString(), entry.getValue().data);
                 words.add(result);
             } else {
                 StringBuilder newPrefix = new StringBuilder(prefix);
@@ -110,7 +110,7 @@ public class TrieMap<T> extends AbstractMap<String, T>{
         char[] chars = getWordChars(word);
         for (Character charr : chars) {
             if (!node.nodes.containsKey(charr)) {
-                node.nodes.put(charr, new TreeNode<T>());
+                node.nodes.put(charr, new TreeNode<>());
             }
             node = node.nodes.get(charr);
         }

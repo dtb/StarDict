@@ -5,14 +5,13 @@ import java.util.logging.Logger;
 
 public class DictionaryIndex {
     private final List<IndexEntry> indexFileEntries;
-    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     // Updated also with indexFileEntries frm the synonyms file, if present.
     private final Map<String, Set<IndexEntry>> entryMap;
 
     public DictionaryIndex(List<IndexEntry> indexFileEntries) {
-        this.indexFileEntries = new ArrayList<IndexEntry>(indexFileEntries);
-        entryMap = new HashMap<String, Set<IndexEntry>>(this.indexFileEntries.size());
+        this.indexFileEntries = new ArrayList<>(indexFileEntries);
+        entryMap = new HashMap<>(this.indexFileEntries.size());
 
         addToIndex(indexFileEntries);
     }
@@ -34,11 +33,7 @@ public class DictionaryIndex {
     }
 
     public Set<IndexEntry> getIndexFileEntries(String word) {
-        if (entryMap.containsKey(word)) {
-            return entryMap.get(word);
-        } else {
-            return Collections.emptySet();
-        }
+        return entryMap.getOrDefault(word, Collections.emptySet());
     }
 
     public void addToIndex(Collection<IndexEntry> entries) {
