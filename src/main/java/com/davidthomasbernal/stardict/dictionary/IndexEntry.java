@@ -8,7 +8,7 @@ import java.util.Set;
 */
 public class IndexEntry {
     public IndexEntry(String word, long dataOffset, long dataSize) {
-        this.words =  new LinkedHashSet<String>();
+        this.words = new LinkedHashSet<>();
         this.words.add(word);
         this.dataOffset = dataOffset;
         this.dataSize = dataSize;

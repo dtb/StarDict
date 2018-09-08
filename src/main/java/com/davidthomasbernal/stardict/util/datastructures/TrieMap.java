@@ -74,8 +74,8 @@ public class TrieMap<T> extends AbstractMap<String, T>{
             return Collections.emptyList();
         }
 
-        Set<Entry<String, T>> wordEntries = searchFrom(node, new StringBuilder(prefix));
-        List<String> result = new ArrayList<String>(wordEntries.size());
+        Set<Entry<String, T>> wordEntries = searchFrom(node, prefix);
+        List<String> result = new ArrayList<>(wordEntries.size());
         for (Entry<String, T> wordEntry : wordEntries) {
             result.add(wordEntry.getKey());
         }
@@ -83,16 +83,14 @@ public class TrieMap<T> extends AbstractMap<String, T>{
         return result;
     }
 
-    protected Set<Entry<String, T>> searchFrom(TreeNode<T> node, StringBuilder prefix) {
+    protected Set<Entry<String, T>> searchFrom(TreeNode<T> node, String prefix) {
         Set<Entry<String, T>> words = new HashSet<>();
         for (Map.Entry<Character, TreeNode<T>> entry : node.nodes.entrySet()) {
             if (entry.getKey() == EOW) {
-                Entry<String, T> result = new SimpleImmutableEntry<String, T>(prefix.toString(), entry.getValue().data);
+                Entry<String, T> result = new SimpleImmutableEntry<>(prefix, entry.getValue().data);
                 words.add(result);
             } else {
-                StringBuilder newPrefix = new StringBuilder(prefix);
-                newPrefix.append(entry.getKey());
-                words.addAll(searchFrom(entry.getValue(), newPrefix));
+                words.addAll(searchFrom(entry.getValue(), prefix + entry.getKey()));
             }
         }
         return words;
@@ -100,7 +98,7 @@ public class TrieMap<T> extends AbstractMap<String, T>{
 
     @Override
     public Set<Entry<String, T>> entrySet() {
-        Set<Entry<String, T>> entries = searchFrom(root, new StringBuilder(""));
+        Set<Entry<String, T>> entries = searchFrom(root, "");
         return entries;
     }
 
@@ -110,7 +108,7 @@ public class TrieMap<T> extends AbstractMap<String, T>{
         char[] chars = getWordChars(word);
         for (Character charr : chars) {
             if (!node.nodes.containsKey(charr)) {
-                node.nodes.put(charr, new TreeNode<T>());
+                node.nodes.put(charr, new TreeNode<>());
             }
             node = node.nodes.get(charr);
         }

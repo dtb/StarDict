@@ -52,7 +52,7 @@ public class Dictionary {
         }
 
         File dict = new File(ifoPath, name + ".dict");
-        boolean hasDict = false;
+        boolean hasDict;
         hasDict = dict.exists() && dict.isFile();
 
         if (!hasDict) {
@@ -71,22 +71,15 @@ public class Dictionary {
             throw new IllegalArgumentException("Idx file does not exist");
         }
 
-        Reader ifoReader = null;
-        DictionaryInfo dictionaryInfo = null;
-
-        try {
-            ifoReader = new InputStreamReader(new FileInputStream(ifo), StandardCharsets.UTF_8);
+        DictionaryInfo dictionaryInfo;
+        try (Reader ifoReader = new InputStreamReader(new FileInputStream(ifo), StandardCharsets.UTF_8)) {
 
             IfoParser ifoParser = new IfoParser();
             dictionaryInfo = ifoParser.parse(ifoReader);
-        } finally {
-            if (ifoReader != null) {
-                ifoReader.close();
-            }
         }
 
         BufferedInputStream stream = null;
-        DictionaryIndex dictionaryIndex = null;
+        DictionaryIndex dictionaryIndex;
 
         try {
             IdxParser idxParser = new IdxParser(dictionaryInfo, tolerateInfoMismatch);

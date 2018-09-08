@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class IdxParser {
     private final DictionaryInfo dictionaryInfo;
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private boolean tolerateInfoMismatch = false;
+    private boolean tolerateInfoMismatch;
 
     public IdxParser(DictionaryInfo info, boolean tolerateInfoMismatch) {
         this.tolerateInfoMismatch = tolerateInfoMismatch;
@@ -32,7 +32,7 @@ public class IdxParser {
     }
 
     protected List<IndexEntry> readEntries(IndexInputStream indexStream) {
-        List<IndexEntry> entries = new ArrayList<IndexEntry>(dictionaryInfo.getWordCount());
+        List<IndexEntry> entries = new ArrayList<>(dictionaryInfo.getWordCount());
 
         boolean isPartial = false;
         try {

@@ -14,7 +14,7 @@ public class SynParser {
     private final DictionaryInfo dictionaryInfo;
     private final DictionaryIndex dictionaryIndex;
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private boolean tolerateInfoMismatch = false;
+    private boolean tolerateInfoMismatch;
 
     public SynParser(DictionaryInfo info, DictionaryIndex index, boolean tolerateInfoMismatch) {
         this.dictionaryInfo = info;
