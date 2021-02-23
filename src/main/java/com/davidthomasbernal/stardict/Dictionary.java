@@ -67,10 +67,6 @@ public class Dictionary {
         File syn = new File(ifoPath, name + ".syn");
         boolean hasSyn = syn.exists() && syn.isFile();
 
-        if (!hasSyn) {
-            throw new IllegalArgumentException("Idx file does not exist");
-        }
-
         DictionaryInfo dictionaryInfo;
         try (Reader ifoReader = new InputStreamReader(new FileInputStream(ifo), StandardCharsets.UTF_8)) {
 
