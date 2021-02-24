@@ -9,15 +9,15 @@
 </description>
 <name>Stardict Dictionary tools</name>
 <issueManagement>
-    <url>https://github.com/sanskrit-coders/StarDict-1/issues</url>
+    <url>https://github.com/indic-dict/StarDict-1/issues</url>
     <system>GitHub Issues</system>
 </issueManagement>
-<url>https://github.com/sanskrit-coders/StarDict-1</url>
+<url>https://github.com/indic-dict/StarDict-1</url>
 
 <licenses>
     <license>
         <name>Apache License 2.0</name>
-        <url>https://raw.githubusercontent.com/sanskrit-coders/StarDict-1/master/LICENSE</url>
+        <url>https://raw.githubusercontent.com/indic-dict/StarDict-1/master/LICENSE</url>
         <distribution>repo</distribution>
     </license>
 </licenses>
@@ -36,12 +36,12 @@
     <developer>
         <email>sanskrit-programmers@googlegroups.com</email>
         <name>Sanskrit coders</name>
-        <url>https://sites.google.com/site/sanskritcode/</url>
-        <id>sanskrit-coders</id>
+        <url>https://sanskrit-coders.github.io/</url>
+        <id>indic-dict</id>
     </developer>
 </developers>
 
-<groupId>com.github.sanskrit-coders</groupId>
+<groupId>com.github.indic-dict</groupId>
 <artifactId>StarDict</artifactId>
 
 <properties>
