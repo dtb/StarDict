@@ -13,6 +13,13 @@ lazy val root = (project in file(".")).
     javacOptions in (Compile, compile) += "-g"
   )
 
+scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/indic-dict/StarDict-1"),
+    "scm:git@github.com:indic-dict/StarDict-1.git"
+  )
+)
+
 useGpg := true
 publishMavenStyle := true
 publishTo := Some(

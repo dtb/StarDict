@@ -23,9 +23,9 @@
 </licenses>
 
 <scm>
-    <url>https://github.com/sanskrit-coders/StarDict-1</url>
-    <connection>scm:git:git://github.com/sanskrit-coders/StarDict-1.git</connection>
-    <developerConnection>scm:git:git@github.com:sanskrit-coders/StarDict-1.git</developerConnection>
+    <url>https://github.com/indic-dict/StarDict-1</url>
+    <connection>scm:git:git://github.com/indic-dict/StarDict-1.git</connection>
+    <developerConnection>scm:git:git@github.com:indic-dict/StarDict-1.git</developerConnection>
 </scm>
 
 <developers>
