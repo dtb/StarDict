@@ -12,3 +12,29 @@ lazy val root = (project in file(".")).
     crossPaths := false,
     javacOptions in (Compile, compile) += "-g"
   )
+
+useGpg := true
+publishMavenStyle := true
+publishTo := Some(
+  if (isSnapshot.value)
+    Opts.resolver.sonatypeSnapshots
+  else
+    Opts.resolver.sonatypeStaging
+)
+
+import ReleaseTransformations._
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  releaseStepCommand("publishSigned"),
+  setNextVersion,
+  commitNextVersion,
+  releaseStepCommand("sonatypeReleaseAll"),
+  pushChanges
+)
