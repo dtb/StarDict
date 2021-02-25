@@ -20,6 +20,7 @@ scmInfo := Some(
   )
 )
 
+organization := "com.github.indic-dict"
 useGpg := true
 publishMavenStyle := true
 publishTo := Some(
