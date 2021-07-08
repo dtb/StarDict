@@ -20,25 +20,20 @@ public class IfoParser {
     public static final int IDX_OFFSET_BITS_LONG = 64;
 
     public DictionaryInfo parse(Reader srcReader) throws IOException {
-        BufferedReader reader = new BufferedReader(srcReader);
-        DictionaryInfo result = new DictionaryInfo();
-
-        try {
+        try (BufferedReader reader = new BufferedReader(srcReader)) {
+            DictionaryInfo result = new DictionaryInfo();
             String line = reader.readLine();
             while (line != null) {
                 processLine(result, line);
 
                 line = reader.readLine();
             }
-        } finally {
-            reader.close();
+            return result;
         }
-
-        return result;
     }
 
     private void processLine(DictionaryInfo result, String line) {
-        if (line.trim().equals("StarDict's dict ifo file")) {
+        if (line.trim().equals("StarDict's dict ifo file") || line.trim().isEmpty()) {
             return;
         }
 
@@ -54,28 +49,38 @@ public class IfoParser {
     }
 
     private void setField(DictionaryInfo result, String key, String value) {
-        if (key.equals(BOOK_NAME)) {
-            result.setName(value);
-        } else if (key.equals(WORD_COUNT)) {
-            int wordCount = Integer.parseInt(value);
-            result.setWordCount(wordCount);
-        } else if (key.equals(SYN_WORD_COUNT)) {
-            int synWordCount = Integer.parseInt(value);
-            result.setSynWordCount(synWordCount);
-        } else if (key.equals(IDX_FILE_SIZE)) {
-            int idxFileSize = Integer.parseInt(value);
-            result.setIdxFileSize(idxFileSize);
-        } else if (key.equals(IDX_OFFSET_BITS)) {
-            int idxOffsetBits = Integer.parseInt(value);
-            result.setIdxOffsetFormat(parseIdxOffsetBits(idxOffsetBits));
-        } else if (key.equals(AUTHOR)) {
-            result.setAuthor(value);
-        } else if (key.equals(SAME_TYPE_SEQUENCE)) {
-            result.setSameTypeSequence(value);
-        } else if (key.equals(VERSION)) {
-            result.setVersion(value);
-        } else {
-            result.setProperty(key, value);
+        switch (key) {
+            case BOOK_NAME:
+                result.setName(value);
+                break;
+            case WORD_COUNT:
+                int wordCount = Integer.parseInt(value);
+                result.setWordCount(wordCount);
+                break;
+            case SYN_WORD_COUNT:
+                int synWordCount = Integer.parseInt(value);
+                result.setSynWordCount(synWordCount);
+                break;
+            case IDX_FILE_SIZE:
+                int idxFileSize = Integer.parseInt(value);
+                result.setIdxFileSize(idxFileSize);
+                break;
+            case IDX_OFFSET_BITS:
+                int idxOffsetBits = Integer.parseInt(value);
+                result.setIdxOffsetFormat(parseIdxOffsetBits(idxOffsetBits));
+                break;
+            case AUTHOR:
+                result.setAuthor(value);
+                break;
+            case SAME_TYPE_SEQUENCE:
+                result.setSameTypeSequence(value);
+                break;
+            case VERSION:
+                result.setVersion(value);
+                break;
+            default:
+                result.setProperty(key, value);
+                break;
         }
     }
 

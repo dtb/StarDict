@@ -22,7 +22,7 @@ public class DictionaryInfo {
 
     protected String sameTypeSequence;
 
-    protected HashMap<String, String> properties = new HashMap<String, String>();
+    protected HashMap<String, String> properties = new HashMap<>();
 
     public class InvalidInfoException extends RuntimeException {
         public InvalidInfoException(String message) { super(message); }

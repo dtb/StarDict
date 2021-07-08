@@ -10,14 +10,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-/**
- * Created by david on 2/16/15.
- */
 public class IdxParser {
     private final DictionaryInfo dictionaryInfo;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private boolean tolerateInfoMismatch;
 
-    public IdxParser(DictionaryInfo info) {
+    public IdxParser(DictionaryInfo info, boolean tolerateInfoMismatch) {
+        this.tolerateInfoMismatch = tolerateInfoMismatch;
         this.dictionaryInfo = info;
     }
 
@@ -31,7 +32,7 @@ public class IdxParser {
     }
 
     protected List<IndexEntry> readEntries(IndexInputStream indexStream) {
-        List<IndexEntry> entries = new ArrayList<IndexEntry>(dictionaryInfo.getWordCount());
+        List<IndexEntry> entries = new ArrayList<>(dictionaryInfo.getWordCount());
 
         boolean isPartial = false;
         try {
@@ -84,7 +85,12 @@ public class IdxParser {
 
     protected void validateEntries(List<IndexEntry> entries) {
         if (entries.size() != dictionaryInfo.getWordCount()) {
-            throw new IndexFormatException("Index and info word counts did not match.");
+            String message = "Info and syn word counts did not match: " + entries.size() + " " + dictionaryInfo.getWordCount();
+            if (tolerateInfoMismatch) {
+                logger.warning(message);
+            } else {
+                throw new IndexFormatException(message);
+            }
         }
     }
 }

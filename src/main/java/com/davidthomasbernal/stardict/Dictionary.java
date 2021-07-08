@@ -1,17 +1,14 @@
 package com.davidthomasbernal.stardict;
 
-import com.davidthomasbernal.stardict.dictionary.DictionaryDefinitions;
-import com.davidthomasbernal.stardict.dictionary.DictionaryIndex;
-import com.davidthomasbernal.stardict.dictionary.DictionaryInfo;
-import com.davidthomasbernal.stardict.dictionary.IndexEntry;
+import com.davidthomasbernal.stardict.dictionary.*;
 import com.davidthomasbernal.stardict.parsers.IdxParser;
 import com.davidthomasbernal.stardict.parsers.IfoParser;
+import com.davidthomasbernal.stardict.parsers.SynParser;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 
 public class Dictionary {
@@ -19,6 +16,7 @@ public class Dictionary {
     protected final DictionaryDefinitions definitions;
     protected final DictionaryIndex index;
     protected final DictionaryInfo info;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     /**
      * Make a dictionary, using the ifo at path
@@ -29,7 +27,7 @@ public class Dictionary {
      * @param path
      * @return
      */
-    public static Dictionary fromIfo(String path) throws IOException, DataFormatException {
+    public static Dictionary fromIfo(String path, boolean tolerateInfoMismatch) throws IOException, DataFormatException {
         File ifo = new File(path);
         String abs = ifo.getAbsolutePath();
 
@@ -54,7 +52,7 @@ public class Dictionary {
         }
 
         File dict = new File(ifoPath, name + ".dict");
-        boolean hasDict = false;
+        boolean hasDict;
         hasDict = dict.exists() && dict.isFile();
 
         if (!hasDict) {
@@ -66,30 +64,40 @@ public class Dictionary {
             throw new IllegalArgumentException("Dict file does not exist");
         }
 
-        Reader ifoReader = null;
-        DictionaryInfo dictionaryInfo = null;
+        File syn = new File(ifoPath, name + ".syn");
+        boolean hasSyn = syn.exists() && syn.isFile();
 
-        try {
-            ifoReader = new InputStreamReader(new FileInputStream(ifo), StandardCharsets.UTF_8);
+        DictionaryInfo dictionaryInfo;
+        try (Reader ifoReader = new InputStreamReader(new FileInputStream(ifo), StandardCharsets.UTF_8)) {
 
             IfoParser ifoParser = new IfoParser();
             dictionaryInfo = ifoParser.parse(ifoReader);
+        }
+
+        BufferedInputStream stream = null;
+        DictionaryIndex dictionaryIndex;
+
+        try {
+            IdxParser idxParser = new IdxParser(dictionaryInfo, tolerateInfoMismatch);
+
+            stream = new BufferedInputStream(new FileInputStream(index));
+            dictionaryIndex = idxParser.parse(stream);
         } finally {
-            if (ifoReader != null) {
-                ifoReader.close();
+            if (stream != null) {
+                stream.close();
             }
         }
 
-        BufferedInputStream indexStream = null;
-        DictionaryIndex dictionaryIndex = null;
-        try {
-            IdxParser idxParser = new IdxParser(dictionaryInfo);
+        if (hasSyn) {
+            try {
+                SynParser parser = new SynParser(dictionaryInfo, dictionaryIndex, tolerateInfoMismatch);
 
-            indexStream = new BufferedInputStream(new FileInputStream(index));
-            dictionaryIndex = idxParser.parse(indexStream);
-        } finally {
-            if (indexStream != null) {
-                indexStream.close();
+                stream = new BufferedInputStream(new FileInputStream(syn));
+                parser.parse(stream);
+            } finally {
+                if (stream != null) {
+                    stream.close();
+                }
             }
         }
 
@@ -119,24 +127,50 @@ public class Dictionary {
     }
 
     public List<String> getDefinitions(String word) throws DataFormatException, IOException {
-        List<IndexEntry> entries = index.getWordEntries(word.toLowerCase());
+        Set<IndexEntry> entries = index.getIndexFileEntries(word.toLowerCase());
 
         if (entries.size() == 0) {
             return Collections.emptyList();
         } else {
-            return definitions.getDefinitions(entries.get(0));
+            return definitions.getDefinitions(entries);
         }
     }
 
-    public List<String> getWords() {
+    public Set<String> getWords() {
         return index.getWords();
     }
 
-    public List<String> searchForWord(String search) {
-        String searchLower = search.toLowerCase();
-        List<String> words = index.getWords();
+    class DictEntryIterator implements Iterator<DictEntry> {
+        private Iterator<IndexEntry> entries = index.getIndexFileEntries().iterator();
+        @Override
+        public DictEntry next() throws NoSuchElementException {
+            IndexEntry indexEntry = entries.next();
+            try {
+                return new DictEntry(indexEntry.words, definitions.getDefinition(indexEntry));
+            } catch (DataFormatException e) {
+                e.printStackTrace();
+                throw new NoSuchElementException();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new NoSuchElementException();
+            }
+        }
 
-        List<String> results = new ArrayList<>();
+        @Override
+        public boolean hasNext() {
+            return entries.hasNext();
+        }
+    }
+
+    public Iterator<DictEntry> getIterator() {
+        return new DictEntryIterator();
+    }
+
+    public Set<String> searchForWord(String search) {
+        String searchLower = search.toLowerCase();
+        Set<String> words = index.getWords();
+
+        Set<String> results = new LinkedHashSet<>();
         for (String word : words) {
            if (word.toLowerCase().equals(searchLower) || word.toLowerCase().startsWith(searchLower)) {
                results.add(word);

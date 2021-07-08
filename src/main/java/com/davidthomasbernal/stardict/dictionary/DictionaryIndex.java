@@ -1,68 +1,48 @@
 package com.davidthomasbernal.stardict.dictionary;
 
-import com.davidthomasbernal.stardict.dictionary.IndexEntry;
-
 import java.util.*;
+import java.util.logging.Logger;
 
 public class DictionaryIndex {
-    // TODO is this actually needed?
-    private final List<IndexEntry> entries;
+    private final List<IndexEntry> indexFileEntries;
 
-    private final Map<String, List<IndexEntry>> entryMap;
+    // Updated also with indexFileEntries frm the synonyms file, if present.
+    private final Map<String, Set<IndexEntry>> entryMap;
 
-    public DictionaryIndex(List<IndexEntry> entries) {
-        this.entries = new ArrayList<IndexEntry>(entries);
-        entryMap = new HashMap<String, List<IndexEntry>>(this.entries.size());
+    public DictionaryIndex(List<IndexEntry> indexFileEntries) {
+        this.indexFileEntries = new ArrayList<>(indexFileEntries);
+        entryMap = new HashMap<>(this.indexFileEntries.size());
 
-        buildIndex();
+        addToIndex(indexFileEntries);
     }
 
-    public List<String> getWords() {
-        return new IndexWordCollection(entries);
+    public Set<String> getWords() {
+        return entryMap.keySet();
     }
 
-    public List<IndexEntry> getWordEntries() {
-        return Collections.unmodifiableList(entries);
+    public List<IndexEntry> getIndexFileEntries() {
+        return Collections.unmodifiableList(indexFileEntries);
+    }
+
+    public IndexEntry getIndexFileEntry(int index) {
+        return indexFileEntries.get(index);
     }
 
     public boolean containsWord(String searchWord) {
         return entryMap.containsKey(searchWord);
     }
 
-    public List<IndexEntry> getWordEntries(String word) {
-        if (entryMap.containsKey(word)) {
-            return entryMap.get(word);
-        } else {
-            return Collections.emptyList();
-        }
+    public Set<IndexEntry> getIndexFileEntries(String word) {
+        return entryMap.getOrDefault(word, Collections.emptySet());
     }
 
-    private void buildIndex() {
+    public void addToIndex(Collection<IndexEntry> entries) {
         for (IndexEntry entry : entries) {
-            String indexWord = entry.word.toLowerCase();
-            if (!entryMap.containsKey(indexWord)) {
-                entryMap.put(indexWord, new LinkedList<IndexEntry>());
+            for (String word: entry.words) {
+                String indexWord = word.toLowerCase();
+                entryMap.putIfAbsent(indexWord, new LinkedHashSet<>());
+                entryMap.get(indexWord).add(entry);
             }
-
-            entryMap.get(indexWord).add(entry);
-        }
-    }
-
-    private static class IndexWordCollection extends AbstractList<String> {
-        List<IndexEntry> indexEntries;
-
-        private IndexWordCollection(List<IndexEntry> indexEntries) {
-            this.indexEntries = indexEntries;
-        }
-
-        @Override
-        public String get(int index) {
-            return indexEntries.get(index).word;
-        }
-
-        @Override
-        public int size() {
-            return indexEntries.size();
         }
     }
 }

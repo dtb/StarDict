@@ -37,7 +37,8 @@ public class IdxParserTest {
         DataOutputStream ds = new DataOutputStream(dictWriter);
 
         for (IndexEntry entry : entries) {
-            byte [] wordBytes = Arrays.copyOf(entry.word.getBytes(StandardCharsets.UTF_8), entry.word.length() + 1);
+            String word = entry.words.iterator().next();
+            byte [] wordBytes = Arrays.copyOf(word.getBytes(StandardCharsets.UTF_8), word.length() + 1);
 
             ds.write(wordBytes, 0, wordBytes.length);
             switch (info.getIdxOffsetFormat()) {
@@ -59,7 +60,7 @@ public class IdxParserTest {
     private DictionaryIndex getDictionaryIndex(List<IndexEntry> entries, DictionaryInfo info) throws IOException {
         ByteArrayInputStream input = new ByteArrayInputStream(getDictionaryBytes(entries, info));
 
-        IdxParser parser = new IdxParser(info);
+        IdxParser parser = new IdxParser(info, false);
         return parser.parse(input);
     }
 
@@ -78,7 +79,7 @@ public class IdxParserTest {
 
         DictionaryIndex index = getDictionaryIndex(expectedEntries);
 
-        List<IndexEntry> actualEntries = index.getWordEntries();
+        List<IndexEntry> actualEntries = index.getIndexFileEntries();
 
         assertSame(expectedEntries, actualEntries);
     }
@@ -91,7 +92,7 @@ public class IdxParserTest {
 
         DictionaryIndex index = getDictionaryIndex(expectedEntries);
 
-        List<IndexEntry> actualEntries = index.getWordEntries();
+        List<IndexEntry> actualEntries = index.getIndexFileEntries();
 
         assertSame(expectedEntries, actualEntries);
     }
@@ -104,7 +105,7 @@ public class IdxParserTest {
 
         DictionaryIndex index = getDictionaryIndex(expectedEntries, DictionaryInfo.IDX_OFFSET_FORMAT_LONG);
 
-        List<IndexEntry> actualEntries = index.getWordEntries();
+        List<IndexEntry> actualEntries = index.getIndexFileEntries();
 
         assertSame(expectedEntries, actualEntries);
     }
@@ -119,7 +120,7 @@ public class IdxParserTest {
         info.setWordCount(50);
         DictionaryIndex index = getDictionaryIndex(expectedEntries, info);
 
-        List<IndexEntry> actualEntries = index.getWordEntries();
+        List<IndexEntry> actualEntries = index.getIndexFileEntries();
 
         assertSame(expectedEntries, actualEntries);
     }
@@ -137,7 +138,7 @@ public class IdxParserTest {
 
         ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes);
 
-        IdxParser parser = new IdxParser(info);
+        IdxParser parser = new IdxParser(info, false);
 
         DictionaryIndex index = parser.parse(byteStream);
     }

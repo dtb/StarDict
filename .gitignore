@@ -1,23 +1,2 @@
-# intellij
-*.iml
-
-.idea/
-.idea_modules/
-atlassian-ide-plugin.xml
-
-/out
-
-# maven
-
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-
-# os x
-.DS_Store
-
-# stardict
-/dictionaries/*
+bin
+target
